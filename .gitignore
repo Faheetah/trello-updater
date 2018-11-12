@@ -2,3 +2,5 @@ trello.yml
 .vscode
 
 *.pyc
+*.egg-info/
+env/
