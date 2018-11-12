@@ -1,10 +1,14 @@
 import requests
 
+from card import Card
+from label import Label
+
 class Trello(object):
     def __init__(self, api_key, api_token, board, endpoint=None):
         self.api_key = api_key
         self.api_token = api_token
         self.board = board
+        self.label_cache = []
         self.endpoint = endpoint or 'https://api.trello.com/1'
 
     def request(self, method, uri, *args, **kwargs):
@@ -24,15 +28,26 @@ class Trello(object):
             raise Exception('Could not query API: {0} returned for {1}, {2}'.format(req.status_code, uri, req.text))
 
     def labels(self):
-        return self.request('GET', '/boards/{0}/labels'.format(self.board))
+        if not self.label_cache:
+            self.label_cache = self.request('GET', '/boards/{0}/labels'.format(self.board))
+        return [Label(self, **l) for l in self.label_cache]
+    
+    def label(self, label_id):
+        if label_id not in [l['id'] for l in self.label_cache]:
+            self.labels()
+        found = (l for l in self.label_cache if l['id'] == label_id).next()
+        if found: 
+            return Label(self, **found)
+        else:
+            raise Exception('Could not find label {} on board'.format(label_id))
     
     def delete_label(self, card, label):
-        return self.request('DELETE', '/cards/{0}/idLabels/{1}'.format(card, label))
+        return self.request('DELETE', '/cards/{0}/idLabels/{1}'.format(card.id, label.id))
     
     def add_label(self, card, label):
-        return self.request('POST', '/cards/{0}/idLabels'.format(card), params={'value': label})
+        return self.request('POST', '/cards/{0}/idLabels'.format(card.id), params={'value': label.id})
 
-    def search(self, query, is_open=True, board=None):
+    def search(self, query='', is_open=True, board=None):
         board = board or self.board
         is_open = 'is:open' if is_open else ''
 
@@ -42,4 +57,5 @@ class Trello(object):
             'cards_limit': 100
         }
 
-        return self.request('GET', '/search', params=params)
+        req = self.request('GET', '/search', params=params)
+        return [Card(self, **c) for c in req.get('cards')]

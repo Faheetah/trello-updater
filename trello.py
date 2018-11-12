@@ -5,31 +5,25 @@ import yaml
 
 from trello import Trello
 
-def update_labels(label, search):
+def update_labels(label_name, search):
     with open('trello.yml', 'r') as t:
         config = yaml.load(t)
 
     trello = Trello(config['key'], config['token'], config['board'])
 
-    try:
-        label_id = (l['id'] for l in trello.labels() if l['name'] == label).next()
-    except StopIteration:
-        print('please create the label {0}'.format(label))
-        return
-    print('label id found {} {}'.format(label, label_id))
+    label = (l for l in trello.labels() if l.name == label_name).next()
+    print('label id found {} {}'.format(label.id, label.name))
 
-    to_delete_cards = trello.search('label:{0}'.format(label))['cards']
-    to_delete = [c['id'] for c in to_delete_cards]
-    to_add_cards = trello.search(search)['cards']
-    to_add = [c['id'] for c in to_add_cards]
+    have_label = trello.search('label:{0}'.format(label_name))
+    need_label = trello.search(search)
 
-    for card in [c for c in to_delete if c not in to_add]:
-        print('deleting {} {} {}'.format(card, label, label_id))
-        trello.delete_label(card, label_id)
+    for card in [c for c in have_label if c not in need_label]:
+        print('deleting {} {}'.format(card, label))
+        card.delete_label(label)
     
-    for card in [c for c in to_add if c not in to_delete]:
-        print('adding {} {} {}'.format(card, label, label_id))
-        trello.add_label(card, label_id)
+    for card in [c for c in need_label if c not in have_label]:
+        print('adding {} {}'.format(card, label))
+        card.add_label(label)
 
 def main():
     # i.e. over30 or recent
