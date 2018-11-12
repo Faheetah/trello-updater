@@ -1,16 +1,16 @@
 # Trello Updater
 
-So far all this does is synchchronize open cards with the given label name, i.e.:
+Install with setup.py, installs a `trello` command that reads from the `cli/` directory. i.e.:
 
 ```
-./trello.py "recent" "created:7"
+trello update_tags "recent" "created:7"
 ```
 
 This will find all open cards created in the past 7 days and label them with the "recent" label, and delete any cards with the "recent" label that did not match the search. The search argument matches the search in Trello and implicitly uses "is:open board:YOURBOARD".
 
 # Config
 
-Config is formatted yaml
+Config is formatted yaml, read from trello.yml by default
 
 ```
 key: YOUR_API_KEY
