@@ -4,3 +4,5 @@ trello.yml
 *.pyc
 *.egg-info/
 env/
+
+flask.log

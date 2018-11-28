@@ -15,5 +15,7 @@ setup(name='trellotools',
         'requests>=2.19.0',
         'argparse>=1.4.0',
         'PyYAML>=3.13',
+        'Flask>=1.0.2',
+        'gevent>=1.3.7',
     ],
 )
