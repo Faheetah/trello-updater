@@ -8,7 +8,7 @@ setup(name='trellotools',
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'trello=console:main',
+            'trello=cli:main',
         ],
     },
     install_requires=[

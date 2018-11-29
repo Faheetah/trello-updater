@@ -4,7 +4,10 @@ import yaml
 
 from inspect import getmembers, ismodule, isfunction
 
+import cli
 import commands
+from trello import Trello
+
 
 def parse():
     parser = argparse.ArgumentParser(
@@ -34,3 +37,15 @@ def parse():
         config = yaml.load(t)
 
     return args, extra_args, config
+
+
+def main():
+    args, extra_args, config = parse()
+
+    trello = Trello(config['key'], config['token'], config['board'])
+
+    try:
+        args.func(trello, *extra_args)
+    except KeyboardInterrupt:
+        print('Keyboard interrupt')
+        sys.exit(1)

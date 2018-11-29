@@ -3,6 +3,8 @@ trello.yml
 
 *.pyc
 *.egg-info/
+*.egg
 env/
+build/
 
 flask.log
