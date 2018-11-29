@@ -1,4 +1,5 @@
 import argparse
+import logging
 import sys
 import yaml
 
@@ -32,6 +33,11 @@ def parse():
         sub.add_parser(command[0], help=func.__doc__, add_help=False).set_defaults(func=func)
 
     args, extra_args = parser.parse_known_args()
+
+    if args.verbose:
+        logging.basicConfig(filename='flask.log',level=logging.DEBUG)
+    else:
+        logging.basicConfig(filename='flask.log',level=logging.INFO)
 
     with open(args.config, 'r') as t:
         config = yaml.load(t)
