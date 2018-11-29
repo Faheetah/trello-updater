@@ -5,9 +5,7 @@ import cli
 from trello import Trello
 from webhook.server import app
 
-def main(*args):
-    'start a webhook server for trello'
-    
+def init_webhook():
     _, _, config = cli.parse()
     trello = Trello(config['key'], config['token'], config['board'])
     webhooks = trello.list_webhooks()
@@ -16,5 +14,18 @@ def main(*args):
         app.logger.info('creating webhook for {}'.format(config['webhook']))
         trello.add_webhook(config['webhook'])
 
+
+def main(*args):
+    'start a webhook server for trello'
+    
     http_server = WSGIServer(('', 5000), app)
-    http_server.serve_forever()
+    if not http_server.started:
+        http_server.start()
+
+    init_webhook()
+
+    try:
+        http_server._stop_event.wait()
+    finally:
+        http_server.stop()
+
