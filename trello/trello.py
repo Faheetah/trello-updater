@@ -60,12 +60,15 @@ class Trello(object):
         req = self.request('GET', '/search', params=params)
         return [Card(self, **c) for c in req.get('cards')]
 
-    def add_webhook(self, idModel, callbackURL):
+    def add_webhook(self, callbackURL, idModel=None):
+        if idModel is None:
+            idModel = self.get_board()['id']
+
         return self.request('POST', '/webhooks/?idModel={}&callbackURL={}'.format(idModel, callbackURL))
 
     def delete_webhook(self, webhook):
         return self.request('DELETE', '/webhooks/{}'.format(webhook))
-
+    
     def list_webhooks(self):
         return self.request('GET', '/tokens/{}/webhooks'.format(self.api_token))
 
