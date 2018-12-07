@@ -18,4 +18,12 @@ setup(name='trellotools',
         'Flask>=1.0.2',
         'gevent>=1.3.7',
     ],
+    extras_require={
+        'dev': [
+            'pytest',
+            'pytest-watch',
+            'pytest-testmon',
+        ]
+    }
+
 )
