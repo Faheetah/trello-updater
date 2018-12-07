@@ -6,5 +6,11 @@ trello.yml
 *.egg
 env/
 build/
+.testmondata
+.pytest_cache
+.tmontmp
+__pycache__/
 
 flask.log
+trello-webhooks/
+
