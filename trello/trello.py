@@ -10,7 +10,7 @@ class Trello(object):
         self.board = board
         self.label_cache = []
         self.endpoint = endpoint or 'https://api.trello.com/1'
-        self.callback = callback
+        self.callback = lambda x: callback(x)
         self.tasks = {
             'addLabel': self.add_label,
             'deleteLabel': self.delete_label,

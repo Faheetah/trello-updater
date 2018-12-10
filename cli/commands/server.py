@@ -9,7 +9,7 @@ from webhook.server import app
 
 def init_webhook():
     _, _, config = cli.parse()
-    trello = Trello(config['key'], config['token'], config['board'])
+    trello = Trello(config['api_key'], config['api_token'], config['board'])
     webhooks = trello.list_webhooks()
 
     if not [wh for wh in webhooks if wh['callbackURL'] == config['webhook']]:
