@@ -65,8 +65,8 @@ ruleset = {
 def test_engine_runs_tasks(engine):
     e = engine(ruleset)
     em = e.modules['examplemodule']
-    em.trigger({'triggered': 'no'})
     assert em.foo == 'foo'
+    em.trigger({'triggered': 'no'})
     assert em.bar == 'bar'
 
 def test_engine_runs_triggers(engine):
@@ -106,3 +106,8 @@ def test_regex_triggers(engine):
     assert foo.foo == 'foo'
     foo.callback({'bar': '[a-z]+ [A-Z]+-[0-9]+'})
     assert foo.foo == 'baz'
+
+def test_short_module_config(engine):
+    ruleset = {'config': {'example': {'foo': 'foo'}}}
+    e = engine(ruleset)
+    assert e.modules['example'].foo == 'foo'

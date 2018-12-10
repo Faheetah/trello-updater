@@ -8,16 +8,22 @@ class Engine(object):
         if 'config' in ruleset:
             for name in ruleset['config']:
                 module_config = ruleset['config'][name]
-                if len(module_config.keys()) > 1:
+                if name in [m.__name__.lower() for m in modules]:
+                    module_name = name
+                    mc = module_config
+                elif len(module_config.keys()) == 1:
+                    module_name = module_config.keys()[0]
+                    mc = module_config[module_name]
+                else:
                     raise Exception('Only one module should be defined')
-                module_name = module_config.keys()[0]
 
                 module_class = [m for m in modules if m.__name__.lower() == module_name]
-                module = module_class[0](self.callback(name), **module_config[module_name])
+                module = module_class[0](callback=self.callback(name), **mc)
                 self.modules[name] = module
         
         for module in modules:
-            self.modules[module.__name__.lower()] = module(self.callback(module.__name__.lower()))
+            if module.__name__.lower() not in self.modules.keys():
+                self.modules[module.__name__.lower()] = module(callback=self.callback(module.__name__.lower()))
 
     def deep_compare(self, left, right):
         if isinstance(left, str):
