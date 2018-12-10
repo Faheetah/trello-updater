@@ -4,7 +4,7 @@ from card import Card
 from label import Label
 
 class Trello(object):
-    def __init__(self, api_key, api_token, board, endpoint=None, callback=None):
+    def __init__(self, api_key, api_token, board, endpoint=None, callback=None, *args, **kwargs):
         self.api_key = api_key
         self.api_token = api_token
         self.board = board
