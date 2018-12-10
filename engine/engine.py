@@ -1,3 +1,5 @@
+import re
+
 class Engine(object):
     def __init__(self, ruleset, modules):
         self.modules = {}
@@ -15,20 +17,31 @@ class Engine(object):
                 self.modules[name] = module
         
         for module in modules:
-            self.modules[module.__name__.lower()] = module(self.callback(name))
-        
-    def run(self, name, args, kwargs):
+            self.modules[module.__name__.lower()] = module(self.callback(module.__name__.lower()))
+
+    def deep_compare(self, left, right):
+        if isinstance(left, str):
+            return re.search(right, left)
+
+        if not isinstance(left, dict):
+            return left == right
+
+        for key in left.keys():
+            if key not in right.keys():
+                return False
+            return self.deep_compare(left[key], right[key])
+
+    def run(self, name, conditionals):
         for job in self.jobs:
             for trigger in self.jobs[job]['triggers']:
-                if name in trigger and trigger[name] == kwargs:
+                if name in trigger and self.deep_compare(trigger[name], conditionals):
                     for task in self.jobs[job]['tasks']:
                         module_name = task.keys()[0]
                         func_name = task[module_name].keys()[0]
                         func = self.modules[module_name].tasks[func_name]
-                        kwargs = task[module_name][func_name]
-                        func(**kwargs)
+                        func(**task[module_name][func_name])
 
     def callback(self, name):
-        def func(*args, **kwargs):
-            self.run(name, args, kwargs)
+        def func(conditionals):
+            self.run(name, conditionals)
         return func

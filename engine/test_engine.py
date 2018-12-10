@@ -3,11 +3,15 @@ import pytest
 from engine import Engine
 
 class Foo():
-    def __init__(self, *args, **kwargs):
+    def __init__(self, callback, *args, **kwargs):
+        self.foo = 'foo'
         self.tasks = {'bar': self.bar}
-
-    def bar(self, baz):
-        return baz
+        self.callback = lambda x: callback(x)
+    
+    def bar(self, foo):
+        self.foo = foo
+        return self.foo
+    
 
 class Example():
     # module must include a callback for triggers and any initialization for config
@@ -21,8 +25,8 @@ class Example():
         self.callback = callback
 
     # trigger could be 
-    def trigger(self, triggered=None):
-        self.callback(triggered=triggered)
+    def trigger(self, conditionals):
+        self.callback(conditionals)
 
     def task(self, name, value):
         if getattr(self, name) is None:
@@ -46,13 +50,13 @@ ruleset = {
     },
     'job2': {
         'triggers': [
-            {'examplemodule': {'triggered': 'no'}}
+            {'examplemodule': {'triggered': 'no', 'something': 'yes'}}
         ],
         'tasks': [
             {'examplemodule': {'task': {'name': 'bar', 'value': 'notbar'}}},
             # this fails it, and it should, because foo shouldn't be usable on noninitialized classes
             # {'example': {'task': {'name': 'foo', 'value': 'fail'}}},
-            {'foo': {'bar': {'baz': 'baz'}}}
+            {'foo': {'bar': {'foo': 'baz'}}}
         ]
     }
 }
@@ -60,10 +64,45 @@ ruleset = {
 
 def test_engine_runs_tasks(engine):
     e = engine(ruleset)
-    examplemodule = e.modules['examplemodule']
-    assert examplemodule.bar == 'bar'
-    examplemodule.trigger(triggered='no')
-    assert examplemodule.foo == 'foo'
-    assert examplemodule.bar == 'notbar'
-    examplemodule.trigger(triggered='yes')
-    assert examplemodule.foo == 'bar'
+    em = e.modules['examplemodule']
+    em.trigger({'triggered': 'no'})
+    assert em.foo == 'foo'
+    assert em.bar == 'bar'
+
+def test_engine_runs_triggers(engine):
+    e = engine(ruleset)
+    em = e.modules['examplemodule']
+    em.trigger({'triggered': 'yes'})
+    assert em.foo == 'bar'
+    assert em.bar == 'bar'
+
+def test_engine_doesnt_trigger_multiple_conditionals(engine):
+    e = engine(ruleset)
+    em = e.modules['examplemodule']
+    em.trigger({'triggered': 'no'})
+    em.trigger({'triggered': 'yes'})
+    assert em.bar == 'bar'
+
+def test_engine_triggers_multiple_conditionals(engine):
+    e = engine(ruleset)
+    em = e.modules['examplemodule']
+    em.trigger({'triggered': 'no', 'something': 'yes'})
+    assert em.bar == 'notbar'
+
+def test_regex_triggers(engine):
+    ruleset = {
+        'job1': {
+            'triggers': [{
+                'foo': {'bar': 'some REGEX-1234'}
+            }],
+            'tasks': [{
+                'foo': {'bar': {'foo': 'baz'}}
+            }]
+        }
+    }
+    e = engine(ruleset)
+    foo = e.modules['foo']
+    foo.callback({'bar': '[a-z]+ [A-Z]+[0-9]+'})
+    assert foo.foo == 'foo'
+    foo.callback({'bar': '[a-z]+ [A-Z]+-[0-9]+'})
+    assert foo.foo == 'baz'
