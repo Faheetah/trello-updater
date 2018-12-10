@@ -42,13 +42,13 @@ def parse():
     with open(args.config, 'r') as t:
         config = yaml.load(t)
 
-    return args, extra_args, config
+    return args, extra_args, config.get('config').get('trello')
 
 
 def main():
     args, extra_args, config = parse()
 
-    trello = Trello(config['key'], config['token'], config['board'])
+    trello = Trello(config['api_key'], config['api_token'], config['board'])
 
     try:
         args.func(trello, *extra_args)

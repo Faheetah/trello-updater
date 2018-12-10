@@ -111,3 +111,11 @@ def test_short_module_config(engine):
     ruleset = {'config': {'example': {'foo': 'foo'}}}
     e = engine(ruleset)
     assert e.modules['example'].foo == 'foo'
+
+# def test_trello():
+#     from trello.trello import Trello
+#     with open('trello.yml') as t:
+#         ruleset = t.read()
+
+#     e = Engine(ruleset, [Trello, Foo])
+#     e.modules['foo'].callback({'bar': False})

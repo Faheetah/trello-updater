@@ -1,8 +1,11 @@
 import re
+import yaml
 
 class Engine(object):
     def __init__(self, ruleset, modules):
         self.modules = {}
+        if isinstance(ruleset, str):
+            ruleset = yaml.load(ruleset)
         self.jobs = {j: ruleset[j] for j in ruleset if j != 'config' and 'triggers' in ruleset[j]}
 
         if 'config' in ruleset:

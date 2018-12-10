@@ -4,12 +4,17 @@ from card import Card
 from label import Label
 
 class Trello(object):
-    def __init__(self, api_key, api_token, board, endpoint=None):
+    def __init__(self, api_key, api_token, board, endpoint=None, callback=None):
         self.api_key = api_key
         self.api_token = api_token
         self.board = board
         self.label_cache = []
         self.endpoint = endpoint or 'https://api.trello.com/1'
+        self.callback = callback
+        self.tasks = {
+            'addLabel': self.add_label,
+            'deleteLabel': self.delete_label,
+        }
 
     def request(self, method, uri, *args, **kwargs):
         url = '/'.join((self.endpoint, uri))
@@ -41,11 +46,22 @@ class Trello(object):
         else:
             raise Exception('Could not find label {} on board'.format(label_id))
     
-    def delete_label(self, card, label):
-        return self.request('DELETE', '/cards/{0}/idLabels/{1}'.format(card.id, label.id))
+    # def delete_label(self, card, label):
+        # return self.request('DELETE', '/cards/{0}/idLabels/{1}'.format(card.id, label.id))
     
+    def delete_label(self, card, label):
+        labels = self.labels()
+        l = [l for l in labels if l.name == label][0]
+        return self.request('DELETE', '/cards/{0}/idLabels/{1}'.format(card, l.id))
+
+    # def add_label(self, card, label):
+        # return self.request('POST', '/cards/{0}/idLabels'.format(card.id), params={'value': label.id})
+
     def add_label(self, card, label):
-        return self.request('POST', '/cards/{0}/idLabels'.format(card.id), params={'value': label.id})
+        labels = self.labels()
+        print(card, labels)
+        l = [l for l in labels if l.name == label][0]
+        return self.request('POST', '/cards/{0}/idLabels'.format(card), params={'value': l.id})
 
     def search(self, query='', is_open=True, board=None):
         board = board or self.board
