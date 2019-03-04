@@ -1,8 +1,12 @@
 from threading import Timer
+import time
+
 
 class Time(object):
     def __init__(self, *args, **kwargs):
-        print(args, kwargs)
+        self.tasks = {
+            'sleep': self.sleep
+        }
     
-    def schedule(delay, callback, *args, **kwargs):
-
+    def sleep(length):
+        time.sleep(length)

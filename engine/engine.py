@@ -1,5 +1,6 @@
 import re
 import yaml
+from jinja2 import Template
 
 class Engine(object):
     def __init__(self, ruleset, modules):
@@ -60,7 +61,7 @@ class Engine(object):
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
                     for task in self.jobs[job].tasks:
-                        task.run()
+                        task.run(conditionals)
 
     def callback(self, name):
         def func(conditionals):
@@ -82,7 +83,9 @@ class Task(object):
         self.args = args
         self.module = module
     
-    def run(self):
+    def run(self, conditionals):
         for task in self.args:
             task_name = self.args[task].keys()[0]
-            self.module.tasks[task_name](**self.args[task][task_name])
+            templated_task = {k: Template(v).render(**conditionals) for k, v in self.args[task][task_name].iteritems() }
+            print("{0} :: {1}".format(task, templated_task))
+            self.module.tasks[task_name](**templated_task)

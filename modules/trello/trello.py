@@ -46,20 +46,13 @@ class Trello(object):
         else:
             raise Exception('Could not find label {} on board'.format(label_id))
     
-    # def delete_label(self, card, label):
-        # return self.request('DELETE', '/cards/{0}/idLabels/{1}'.format(card.id, label.id))
-    
     def delete_label(self, card, label):
         labels = self.labels()
         l = [l for l in labels if l.name == label][0]
         return self.request('DELETE', '/cards/{0}/idLabels/{1}'.format(card, l.id))
 
-    # def add_label(self, card, label):
-        # return self.request('POST', '/cards/{0}/idLabels'.format(card.id), params={'value': label.id})
-
     def add_label(self, card, label):
         labels = self.labels()
-        print(card, labels)
         l = [l for l in labels if l.name == label][0]
         return self.request('POST', '/cards/{0}/idLabels'.format(card), params={'value': l.id})
 
@@ -91,6 +84,3 @@ class Trello(object):
 
     def get_board(self):
         return self.request('GET', '/boards/{}'.format(self.board))
-
-    def trigger(self, job):
-        job.run()
