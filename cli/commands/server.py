@@ -1,5 +1,6 @@
 import gevent
 from gevent.pywsgi import WSGIServer
+from flask import Flask
 
 import cli
 import time
