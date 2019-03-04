@@ -17,17 +17,18 @@ class Engine(object):
     def init_jobs(self):
         jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config' and 'triggers' in self.ruleset[j]}
         for job in jobs:
-            tasks = [Task(self.modules[t], jobs[job]['tasks'][t]) for t in jobs[job]['tasks']]
+            tasks = [Task(self.modules[t.keys()[0]], t) for t in jobs[job]['tasks']]
             self.jobs[job] = Job(job, jobs[job].get('triggers', {}), tasks)
         
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
-                self.modules.get(trigger).trigger(self.jobs[job])
+                self.modules.get(trigger.keys()[0]).trigger(self.jobs[job])
 
 
     def init_modules(self, modules):
         for module in modules:
-            self.modules[module.__name__.lower()] = module()
+            if module.__name__.lower() not in self.ruleset.get('config', {}):
+                self.modules[module.__name__.lower()] = module()
         
         if 'config' in self.ruleset:
             for name in self.ruleset['config']:
@@ -81,7 +82,7 @@ class Job(object):
 
     def run(self, payload=None):
         for task in self.tasks:
-            task()
+            task.run()
 
 class Task(object):
     def __init__(self, module, args):
@@ -90,5 +91,5 @@ class Task(object):
     
     def run(self):
         for task in self.args:
-            print(self.module)
-            self.module.tasks[task](**self.args[task])
+            task_name = self.args[task].keys()[0]
+            self.module.tasks[task_name](**self.args[task][task_name])
