@@ -92,5 +92,5 @@ class Trello(object):
     def get_board(self):
         return self.request('GET', '/boards/{}'.format(self.board))
 
-    def trigger(self):
+    def trigger(self, job):
         job.run()
