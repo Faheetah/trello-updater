@@ -20,10 +20,6 @@ class Engine(object):
             tasks = [Task(self.modules[t.keys()[0]], t) for t in jobs[job]['tasks']]
             self.jobs[job] = Job(job, jobs[job].get('triggers', {}), tasks)
         
-        for job in self.jobs:
-            for trigger in self.jobs[job].triggers:
-                self.modules.get(trigger.keys()[0]).trigger(self.jobs[job])
-
 
     def init_modules(self, modules):
         for module in modules:
