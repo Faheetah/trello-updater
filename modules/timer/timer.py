@@ -1,4 +1,3 @@
-from threading import Timer
 import time
 
 
@@ -8,5 +7,5 @@ class Timer(object):
             'sleep': self.sleep
         }
     
-    def sleep(length):
+    def sleep(self, length):
         time.sleep(length)
