@@ -86,6 +86,11 @@ class Task(object):
     def run(self, conditionals):
         for task in self.args:
             task_name = self.args[task].keys()[0]
-            templated_task = {k: Template(v).render(**conditionals) for k, v in self.args[task][task_name].iteritems() }
-            print("{0} :: {1}".format(task, templated_task))
-            self.module.tasks[task_name](**templated_task)
+            templated_tasks = {}
+            for k, v in self.args[task][task_name].iteritems():
+                if isinstance(v, basestring):
+                    templated_tasks[k] = Template(v).render(**conditionals)
+                else:
+                    templated_tasks[k] = v
+            print("{0} :: {1}".format(task, templated_tasks))
+            self.module.tasks[task_name](**templated_tasks)

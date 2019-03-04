@@ -2,7 +2,7 @@ import logging
 from flask import Blueprint, request, current_app
 from pprint import pformat
 from . import Trello
-from modules.time import Time
+from modules.timer import Timer
 from engine.engine import Engine
 
 trello = Blueprint('trello', __name__)
@@ -24,6 +24,6 @@ def webhook():
         ruleset = t.read()
 
     # @todo this needs to get refactored out to spawn multiple apps per trello instance
-    e = Engine(ruleset, [Trello, Time])
+    e = Engine(ruleset, [Trello, Timer])
     e.run('trello', json)
     return ''
