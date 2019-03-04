@@ -61,13 +61,10 @@ class Engine(object):
 
     def run(self, name, conditionals):
         for job in self.jobs:
-            for trigger in self.jobs[job]['triggers']:
+            for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
-                    for task in self.jobs[job]['tasks']:
-                        module_name = task.keys()[0]
-                        func_name = task[module_name].keys()[0]
-                        func = self.modules[module_name].tasks[func_name]
-                        func(**task[module_name][func_name])
+                    for task in self.jobs[job].tasks:
+                        task.run()
 
     def callback(self, name):
         def func(conditionals):

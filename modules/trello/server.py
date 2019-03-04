@@ -24,5 +24,5 @@ def webhook():
 
     # @todo this needs to get refactored out to spawn multiple apps per trello instance
     e = Engine(ruleset, [Trello])
-    e.callback(json)()
+    e.run('trello', json)
     return ''
