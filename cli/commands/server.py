@@ -4,8 +4,8 @@ from gevent.pywsgi import WSGIServer
 import cli
 import time
 
-from trello import Trello
-from webhook.server import app
+from modules.trello import Trello
+from modules.trello.server import trello
 
 def init_webhook():
     _, _, config = cli.parse()
@@ -14,20 +14,20 @@ def init_webhook():
 
     if not [wh for wh in webhooks if wh['callbackURL'] == config['webhook']]:
         for i in range(5):
-            app.logger.info('creating webhook for {}'.format(config['webhook']))
+            trello.logger.info('creating webhook for {}'.format(config['webhook']))
             try:
                 trello.add_webhook(config['webhook'])
                 return
             except Exception:
-                app.logger.info('retrying in {} seconds'.format(i))
+                trello.logger.info('retrying in {} seconds'.format(i))
                 time.sleep(i)
-        app.logger.warning('could not create webhook for {}'.format(config['webhook']))
+        trello.logger.warning('could not create webhook for {}'.format(config['webhook']))
 
 
 def main(*args):
     'start a webhook server for trello'
     
-    http_server = WSGIServer(('', 5000), app)
+    http_server = WSGIServer(('', 5000), trello)
     if not http_server.started:
         http_server.start()
 

@@ -7,7 +7,7 @@ from inspect import getmembers, ismodule, isfunction
 
 import cli
 import commands
-from trello import Trello
+from modules.trello import Trello
 
 
 def parse():

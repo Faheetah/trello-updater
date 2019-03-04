@@ -1,7 +1,7 @@
 import requests
 
-from card import Card
-from label import Label
+from api.card import Card
+from api.label import Label
 
 class Trello(object):
     def __init__(self, api_key, api_token, board, endpoint=None, callback=None, *args, **kwargs):

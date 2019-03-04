@@ -3,14 +3,35 @@ import yaml
 
 class Engine(object):
     def __init__(self, ruleset, modules):
-        self.modules = {}
         if isinstance(ruleset, str):
-            ruleset = yaml.load(ruleset)
-        self.jobs = {j: ruleset[j] for j in ruleset if j != 'config' and 'triggers' in ruleset[j]}
+            self.ruleset = yaml.load(ruleset)
+        else:
+            self.ruleset = ruleset
 
-        if 'config' in ruleset:
-            for name in ruleset['config']:
-                module_config = ruleset['config'][name]
+        self.modules = {}
+        self.init_modules(modules)
+
+        self.jobs = {}
+        self.init_jobs()
+    
+    def init_jobs(self):
+        jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config' and 'triggers' in self.ruleset[j]}
+        for job in jobs:
+            tasks = [Task(self.modules[t], jobs[job]['tasks'][t]) for t in jobs[job]['tasks']]
+            self.jobs[job] = Job(job, jobs[job].get('triggers', {}), tasks)
+        
+        for job in self.jobs:
+            for trigger in self.jobs[job].triggers:
+                self.modules.get(trigger).trigger(self.jobs[job])
+
+
+    def init_modules(self, modules):
+        for module in modules:
+            self.modules[module.__name__.lower()] = module()
+        
+        if 'config' in self.ruleset:
+            for name in self.ruleset['config']:
+                module_config = self.ruleset['config'][name]
                 if name in [m.__name__.lower() for m in modules]:
                     module_name = name
                     mc = module_config
@@ -21,13 +42,10 @@ class Engine(object):
                     raise Exception('Only one module should be defined')
 
                 module_class = [m for m in modules if m.__name__.lower() == module_name]
-                module = module_class[0](callback=self.callback(name), **mc)
+                module = module_class[0](**mc)
                 self.modules[name] = module
+                        
         
-        for module in modules:
-            if module.__name__.lower() not in self.modules.keys():
-                self.modules[module.__name__.lower()] = module(callback=self.callback(module.__name__.lower()))
-
     def deep_compare(self, left, right):
         if isinstance(left, str):
             return re.search(right, left)
@@ -54,3 +72,23 @@ class Engine(object):
         def func(conditionals):
             self.run(name, conditionals)
         return func
+
+class Job(object):
+    def __init__(self, name, triggers, tasks):
+        self.name = name
+        self.triggers = triggers
+        self.tasks = tasks
+
+    def run(self, payload=None):
+        for task in self.tasks:
+            task()
+
+class Task(object):
+    def __init__(self, module, args):
+        self.args = args
+        self.module = module
+    
+    def run(self):
+        for task in self.args:
+            print(self.module)
+            self.module.tasks[task](**self.args[task])
