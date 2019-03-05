@@ -14,11 +14,11 @@ class Engine(object):
         self.modules = {}
         self.init_modules(modules)
 
-        self.webhooks = {}
-        self.init_webhooks()
-
         self.jobs = {}
         self.init_jobs()
+
+        self.webhooks = {}
+        self.init_webhooks()
 
     def init_webhooks(self):
         for name, module in self.modules.iteritems():
