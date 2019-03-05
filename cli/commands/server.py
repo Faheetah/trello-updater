@@ -28,12 +28,9 @@ def main(config, *args):
 
     app = Flask(__name__)
 
-    engine = Engine(config, modules)
+    with app.app_context():
+        engine = Engine(config, modules)
 
-    for name, webhook in engine.webhooks.iteritems():
-        with app.app_context():
-            app.register_blueprint(webhook.blueprint)
-    
     http_server = WSGIServer(('', 5000), app)
     if not http_server.started:
         http_server.start()

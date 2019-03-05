@@ -79,9 +79,11 @@ class Trello(object):
 
         return self.request('POST', '/webhooks/?idModel={}&callbackURL={}'.format(idModel, callbackURL))
 
+    # this method is bad, and a misnomer since it can delete more than one webhook
     def delete_webhook(self, webhook):
-        webhook_id = {wh['id'] for wh in self.list_webhooks() if wh['callbackURL'] == webhook}
-        return self.request('DELETE', '/webhooks/{}'.format(webhook_id))
+        webhook_ids = {wh['id'] for wh in self.list_webhooks() if wh['callbackURL'] == webhook}
+        for webhook_id in webhook_ids:
+            self.request('DELETE', '/webhooks/{}'.format(webhook_id))
     
     def list_webhooks(self):
         return self.request('GET', '/tokens/{}/webhooks'.format(self.api_token))
