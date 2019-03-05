@@ -8,8 +8,9 @@ class TrelloWebhook(object):
     def __init__(self, name, module, callback):
         self.name = name
         self.trello = module
+        self.callback = callback
         self.blueprint = Blueprint(name, __name__)
-        self.blueprint.route('/', methods=['POST'])(self.webhook)
+        self.blueprint.route('/', methods=['HEAD', 'POST'])(self.webhook)
 
     def register(self, webhook):
         webhooks = self.trello.list_webhooks()
@@ -27,7 +28,7 @@ class TrelloWebhook(object):
 
     def webhook(self):
         if request.method == 'HEAD':
-            return request
+            return ''
     
         json = request.get_json().get('action')
     
@@ -37,4 +38,4 @@ class TrelloWebhook(object):
     
         self.callback(json)
     
-        return request
+        return ''
