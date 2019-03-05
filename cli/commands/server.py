@@ -13,7 +13,7 @@ def main(config, *args):
 
     engine = Engine(config, modules)
 
-    for name, webhook in engine.webhooks:
+    for name, webhook in engine.webhooks.iteritems():
         app.register_blueprint(webhook.blueprint)
     
     http_server = WSGIServer(('', 5000), app)
@@ -23,8 +23,8 @@ def main(config, *args):
     pid = gevent.os.fork()
     if pid == 0:
         _, _, config = cli.parse()
-        for webhook in engine.webhooks:
-            webhook_url = '/'.join(config['webhook'], webhook.name)
+        for name, webhook in engine.webhooks.iteritems():
+            webhook_url = '/'.join((config['config'][name]['webhook'], name))
             app.logger.info('Registering ' + webhook_url)
             webhook.register(webhook_url)
 
