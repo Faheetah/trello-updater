@@ -21,7 +21,10 @@ class Engine(object):
         self.init_jobs()
 
     def init_webhooks(self, webhooks):
-        return {k: m.webhook(k, m) for k,m in self.modules if getattr(m, 'webhook', None)}
+        for name, module in self.modules.iteritems():
+            for trigger_class in getattr(module, 'triggers', None):
+                trigger = trigger_class(name, module)
+                self.webhooks[name] = module
     
     def init_jobs(self):
         jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config' and 'triggers' in self.ruleset[j]}
