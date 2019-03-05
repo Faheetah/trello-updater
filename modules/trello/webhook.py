@@ -5,7 +5,7 @@ from flask import Blueprint, request, current_app
 from modules.timer import Timer
 
 class TrelloWebhook(object):
-    def __init__(self, name, module):
+    def __init__(self, name, module, callback):
         self.name = name
         self.trello = module
         self.blueprint = Blueprint(name, __name__)
@@ -27,7 +27,7 @@ class TrelloWebhook(object):
 
     def webhook(self):
         if request.method == 'HEAD':
-            return ''
+            return request
     
         json = request.get_json().get('action')
     
@@ -35,5 +35,6 @@ class TrelloWebhook(object):
             message = u'{} :: {} :: {} :: {}'.format(json['type'], json['id'], json.get('data').get('board', {}).get('name'), json.get('data').get('card', {}).get('name'))
             current_app.logger.info(message)
     
-        return json
+        self.callback(json)
     
+        return request

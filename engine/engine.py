@@ -23,8 +23,8 @@ class Engine(object):
     def init_webhooks(self):
         for name, module in self.modules.iteritems():
             for trigger_class in getattr(module, 'triggers', []):
-                trigger = trigger_class(name, module)
-                self.webhooks[name] = self.callback(name, trigger)
+                trigger = trigger_class(name, module, self.callback)
+                self.webhooks[name] = trigger
     
     def init_jobs(self):
         jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config' and 'triggers' in self.ruleset[j]}
@@ -74,7 +74,7 @@ class Engine(object):
                     for task in self.jobs[job].tasks:
                         task.run(conditionals)
 
-    def callback(self, name, f):
+    def callback(self, name, conditionals):
         def func(f):
             conditionals = f()
             self.run(name, conditionals)
