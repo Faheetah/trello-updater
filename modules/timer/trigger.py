@@ -11,4 +11,4 @@ class TimerTrigger(object):
     def start(self):
         threading.Timer(10.0, self.start).start()
         now = datetime.datetime.now()
-        self.callback(now.second)
+        self.callback({"second": now.second})
