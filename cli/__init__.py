@@ -42,7 +42,7 @@ def parse():
     with open(args.config, 'r') as t:
         config = yaml.load(t)
 
-    return args, extra_args, config.get('config')
+    return args, extra_args, config
 
 
 def main():
