@@ -42,16 +42,14 @@ def parse():
     with open(args.config, 'r') as t:
         config = yaml.load(t)
 
-    return args, extra_args, config.get('config').get('trello')
+    return args, extra_args, config.get('config')
 
 
 def main():
     args, extra_args, config = parse()
 
-    trello = Trello(config['api_key'], config['api_token'], config['board'])
-
     try:
-        args.func(trello, *extra_args)
+        args.func(config, *extra_args)
     except KeyboardInterrupt:
         print('Keyboard interrupt')
         sys.exit(1)

@@ -6,15 +6,12 @@ import cli
 from modules import modules
 from engine import Engine
 
-def main(*args):
+def main(config, *args):
     'start a webhook server for trello'
 
     app = Flask(__name__)
 
-    with open('trello.yml') as t:
-        ruleset = t.read()
-
-    engine = Engine(ruleset, modules)
+    engine = Engine(config, modules)
 
     for name, webhook in engine.webhooks:
         app.register_blueprint(webhook.blueprint)
@@ -27,7 +24,7 @@ def main(*args):
     if pid == 0:
         _, _, config = cli.parse()
         for webhook in engine.webhooks:
-            webhook.register()
+            webhook.register(config['webhook'])
 
     try:
         http_server._stop_event.wait()
