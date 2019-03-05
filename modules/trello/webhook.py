@@ -10,7 +10,7 @@ class TrelloWebhook(object):
         self.trello = module
         self.callback = callback
         self.blueprint = Blueprint(name, __name__)
-        self.blueprint.route('/', methods=['HEAD', 'POST'])(self.webhook)
+        self.blueprint.route('/' + name, methods=['HEAD', 'POST'])(self.webhook)
 
     def register(self, webhook):
         webhooks = self.trello.list_webhooks()
