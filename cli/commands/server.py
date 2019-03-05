@@ -24,7 +24,7 @@ def main(config, *args):
     if pid == 0:
         _, _, config = cli.parse()
         for webhook in engine.webhooks:
-            webhook.register(config['webhook'])
+            webhook.register('/'.join(config['webhook'], webhook.name))
 
     try:
         http_server._stop_event.wait()
