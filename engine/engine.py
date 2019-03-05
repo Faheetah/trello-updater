@@ -74,7 +74,7 @@ class Engine(object):
                     for task in self.jobs[job].tasks:
                         task.run(conditionals)
 
-    def callback(self, name):
+    def callback(self, name, f):
         def func(f):
             conditionals = f()
             self.run(name, conditionals)
