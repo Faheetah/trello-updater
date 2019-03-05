@@ -3,18 +3,22 @@ import requests
 from api.card import Card
 from api.label import Label
 
+from webhook import TrelloWebhook
+
 class Trello(object):
-    def __init__(self, api_key, api_token, board, endpoint=None, callback=None, *args, **kwargs):
+    def __init__(self, api_key, api_token, board, endpoint=None, *args, **kwargs):
         self.api_key = api_key
         self.api_token = api_token
         self.board = board
         self.label_cache = []
         self.endpoint = endpoint or 'https://api.trello.com/1'
-        self.callback = lambda x: callback(x)
+
         self.tasks = {
             'addLabel': self.add_label,
             'deleteLabel': self.delete_label,
         }
+
+        self.triggers = [TrelloWebhook]
 
     def request(self, method, uri, *args, **kwargs):
         url = '/'.join((self.endpoint, uri))

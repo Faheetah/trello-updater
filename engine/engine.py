@@ -1,6 +1,7 @@
 import re
 import yaml
-from jinja2 import Template
+
+from . import Task, Job
 
 class Engine(object):
     def __init__(self, ruleset, modules):
@@ -12,8 +13,14 @@ class Engine(object):
         self.modules = {}
         self.init_modules(modules)
 
+        self.webhooks = {}
+        self.init_webhooks 
+
         self.jobs = {}
         self.init_jobs()
+
+    def init_webhooks(self, webhooks):
+        return {k: m.webhook(name, m) for k,m in self.modules if getattr(m, 'webhook', None)}
     
     def init_jobs(self):
         jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config' and 'triggers' in self.ruleset[j]}
@@ -67,30 +74,3 @@ class Engine(object):
         def func(conditionals):
             self.run(name, conditionals)
         return func
-
-class Job(object):
-    def __init__(self, name, triggers, tasks):
-        self.name = name
-        self.triggers = triggers
-        self.tasks = tasks
-
-    def run(self, payload=None):
-        for task in self.tasks:
-            task.run()
-
-class Task(object):
-    def __init__(self, module, args):
-        self.args = args
-        self.module = module
-    
-    def run(self, conditionals):
-        for task in self.args:
-            task_name = self.args[task].keys()[0]
-            templated_tasks = {}
-            for k, v in self.args[task][task_name].iteritems():
-                if isinstance(v, basestring):
-                    templated_tasks[k] = Template(v).render(**conditionals)
-                else:
-                    templated_tasks[k] = v
-            print("{0} :: {1}".format(task, templated_tasks))
-            self.module.tasks[task_name](**templated_tasks)
