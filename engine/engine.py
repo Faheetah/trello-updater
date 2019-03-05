@@ -15,12 +15,12 @@ class Engine(object):
         self.init_modules(modules)
 
         self.webhooks = {}
-        self.init_webhooks 
+        self.init_webhooks()
 
         self.jobs = {}
         self.init_jobs()
 
-    def init_webhooks(self, webhooks):
+    def init_webhooks(self):
         for name, module in self.modules.iteritems():
             for trigger_class in getattr(module, 'triggers', None):
                 trigger = trigger_class(name, module)
