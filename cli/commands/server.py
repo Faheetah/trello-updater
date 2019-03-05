@@ -44,7 +44,6 @@ def main(config, *args):
         for name, webhook in engine.webhooks.iteritems():
             with app.app_context():
                 webhook_url = '/'.join((config['config'][name]['webhook'], name))
-                app.logger.info('Registering ' + webhook_url)
                 webhook.register(webhook_url)
 
     try:
