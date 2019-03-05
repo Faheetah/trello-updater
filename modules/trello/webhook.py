@@ -15,14 +15,14 @@ class TrelloWebhook(object):
         webhooks = self.trello.list_webhooks()
         if not [wh for wh in webhooks if wh['callbackURL'] == webhook]:
             for i in range(5):
-                self.app.logger.info('creating webhook for {}'.format(webhook))
+                current_app.logger.info('creating webhook for {}'.format(webhook))
                 try:
                     self.trello.add_webhook(webhook)
                     return
                 except Exception:
-                    self.app.logger.info('retrying in {} seconds'.format(i))
+                    current_app.logger.info('retrying in {} seconds'.format(i))
                     time.sleep(i)
-            self.app.logger.warning('could not create webhook for {}'.format(webhook))
+            current_app.logger.warning('could not create webhook for {}'.format(webhook))
 
 
     def webhook(self):
