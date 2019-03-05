@@ -14,7 +14,7 @@ def main(config, *args):
     engine = Engine(config, modules)
 
     for name, webhook in engine.webhooks.iteritems():
-        app.register_blueprint(webhook.blueprint)
+       app.register_blueprint(webhook.blueprint)
     
     http_server = WSGIServer(('', 5000), app)
     if not http_server.started:
