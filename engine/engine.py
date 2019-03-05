@@ -2,7 +2,7 @@ import re
 import yaml
 
 from task import Task
-from Job import Job
+from job import Job
 
 class Engine(object):
     def __init__(self, ruleset, modules):
