@@ -18,6 +18,7 @@ class Trello(object):
             'deleteLabel': self.delete_label,
             'createList': self.create_list,
             'createCard': self.create_card,
+            'createChecklist': self.create_card,
         }
 
         self.triggers = [TrelloWebhook]
@@ -106,7 +107,7 @@ class Trello(object):
             idList = self.create_list(list)['id']
         return self.request('POST', '/cards', params={'name': name, 'description': description, 'idList': idList})
 
-    def create_checklist(self, name, checkItems, idCard):
-        checklist = self.request('POST', '/checklists', params={'name': name, 'idCard': idCard})
+    def create_checklist(self, name, checkItems, card):
+        checklist = self.request('POST', '/checklists', params={'name': name, 'card': card})
         for item in checkItems:
             self.request('POST', '/checklists/{}/checkItems/'.format(checklist['id']), params={'name': item})
