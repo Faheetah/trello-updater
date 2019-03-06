@@ -68,7 +68,9 @@ class Engine(object):
         for key in left.keys():
             if key not in right.keys():
                 return False
-            return self.deep_compare(left[key], right[key])
+            if not self.deep_compare(left[key], right[key]):
+                return False
+        return True
 
     def run(self, name, conditionals):
         for job in self.jobs:
