@@ -18,7 +18,7 @@ class Trello(object):
             'deleteLabel': self.delete_label,
             'createList': self.create_list,
             'createCard': self.create_card,
-            'createChecklist': self.create_card,
+            'createChecklist': self.create_checklist,
         }
 
         self.triggers = [TrelloWebhook]
