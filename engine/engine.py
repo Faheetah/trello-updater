@@ -56,9 +56,12 @@ class Engine(object):
                         
         
     def deep_compare(self, left, right):
+        if callable(right):
+            return right(left)
+
         if isinstance(left, str):
             return re.search(right, left)
-
+        
         if not isinstance(left, dict):
             return left == right
 
