@@ -75,7 +75,7 @@ class Engine(object):
         return True
 
     def run(self, name, conditionals, bindings=None):
-        if bindings = None:
+        if bindings == None:
             bindings = {}
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
