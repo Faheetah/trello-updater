@@ -21,7 +21,7 @@ class TimerTrigger(object):
             "weekday": self.weekday,
             "day": self.day,
             "hour": self.hour,
-            "minute": self.minute
+            "minute": self.minute,
             "second": self.second
         }
 
