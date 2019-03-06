@@ -16,6 +16,8 @@ class Trello(object):
         self.tasks = {
             'addLabel': self.add_label,
             'deleteLabel': self.delete_label,
+            'createList': self.create_list,
+            'createCard': self.create_card,
         }
 
         self.triggers = [TrelloWebhook]
@@ -90,3 +92,16 @@ class Trello(object):
 
     def get_board(self):
         return self.request('GET', '/boards/{}'.format(self.board))
+
+    def list_lists(self):
+        return self.request('GET', '/boards/{}/lists'.format(self.board))
+    
+    def create_list(self, name):
+        return self.request('POST', '/boards/{}/lists'.format(self.board), params={'name': name})
+
+    def create_card(self, name, description, list_name):
+        lists = self.list_lists()
+        l = in [l for l in lists if l['name'] == list_name]:
+        if not l:
+            l = self.create_list(list_name)
+        return self.request('POST', '/boards/{}/cards'.format(self.board), params={'name': name, 'description': description, idList: l['id']})
