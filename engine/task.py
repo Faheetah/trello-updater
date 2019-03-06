@@ -4,6 +4,7 @@ class Task(object):
     def __init__(self, module, args):
         self.args = args
         self.module = module
+        self.name = args.pop('name', None)
     
     def run(self, conditionals, bindings=None):
         if bindings == None:
@@ -17,4 +18,4 @@ class Task(object):
                 else:
                     templated_tasks[k] = v
             print("{0} :: {1}".format(task, templated_tasks))
-            self.module.tasks[task_name](**templated_tasks)
+            return self.name, self.module.tasks[task_name](**templated_tasks)

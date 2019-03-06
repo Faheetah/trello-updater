@@ -20,6 +20,8 @@ class Engine(object):
         self.webhooks = {}
         self.init_webhooks()
 
+        self.executions = {}
+
     def init_webhooks(self):
         for name, module in self.modules.iteritems():
             for trigger_class in getattr(module, 'triggers', []):
@@ -77,7 +79,10 @@ class Engine(object):
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
                     for task in self.jobs[job].tasks:
-                        task.run(conditionals, bindings)
+                        if task.name:
+                            self.executions[job] = {task.name: task.run(conditionals, bindings.update(self.executions))}
+                        else:
+                            task.run(conditionls, bindings.update(self.executions))
 
     def callback(self, name):
         def func(conditionals, bindings=None):
