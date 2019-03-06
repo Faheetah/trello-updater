@@ -100,8 +100,13 @@ class Trello(object):
         return self.request('POST', '/boards/{}/lists'.format(self.board), params={'name': name})
 
     def create_card(self, name, description, list):
-        lists = self.list_lists()
-        l = [l for l in lists if l['name'] == list]
-        if not l:
-            l = self.create_list(list)
-        return self.request('POST', '/boards/{}/cards'.format(self.board), params={'name': name, 'description': description, idList: l['id']})
+        if len(l):
+            idList = l[0]['id']
+        else:
+            idList = self.create_list(list)['id']
+        return self.request('POST', '/cards', params={'name': name, 'description': description, 'idList': idList})
+
+    def create_checklist(self, name, checkItems, idCard):
+        checklist = self.request('POST', '/checklists', params={'name': name, 'idCard': idCard})
+        for item in checkItems:
+            self.request('POST', '/checklists/{}/checkItems/'.format(checklist['id']), params={'name': item})
