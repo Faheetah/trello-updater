@@ -72,14 +72,14 @@ class Engine(object):
                 return False
         return True
 
-    def run(self, name, conditionals):
+    def run(self, name, conditionals, bindings=None):
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
                     for task in self.jobs[job].tasks:
-                        task.run(conditionals)
+                        task.run(conditionals, bindings)
 
     def callback(self, name):
-        def func(conditionals):
-            self.run(name, conditionals)
+        def func(conditionals, bindings=None):
+            self.run(name, conditionals, bindings)
         return func

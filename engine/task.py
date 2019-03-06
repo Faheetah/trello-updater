@@ -5,7 +5,9 @@ class Task(object):
         self.args = args
         self.module = module
     
-    def run(self, conditionals):
+    def run(self, conditionals, bindings=None):
+        if bindings == None:
+            bindings = conditionals
         for task in self.args:
             task_name = self.args[task].keys()[0]
             templated_tasks = {}
