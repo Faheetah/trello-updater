@@ -29,7 +29,10 @@ class TimerTrigger(object):
             "second": self.second
         }
 
-        self.callback(spec, bindings=datetime.datetime.now())
+        # this isn't going to be 100% accurate because it's not straightforward
+        # to generate time right, will cause possible off by 1 but for now shouldn't be
+        # too impacting
+        self.callback(spec, bindings={x: getattr(now, x) for x in dir(now)})
 
     def month(self, pattern):
         now = datetime.datetime.now().month
