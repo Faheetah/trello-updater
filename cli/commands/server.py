@@ -1,6 +1,7 @@
 import gevent
 from gevent.pywsgi import WSGIServer
 from flask import Flask
+import logging
 
 import cli
 from modules import modules
@@ -11,6 +12,7 @@ def main(config, *args):
     'start a webhook server for trello'
 
     app = Flask(__name__)
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
 
     with app.app_context():
         engine = Engine(config, modules)
@@ -32,4 +34,3 @@ def main(config, *args):
         http_server._stop_event.wait()
     finally:
         http_server.stop()
-
