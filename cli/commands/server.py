@@ -2,6 +2,7 @@ import gevent
 from gevent.pywsgi import WSGIServer
 from flask import Flask
 import logging
+import sys
 
 import cli
 from modules import modules
