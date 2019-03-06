@@ -14,6 +14,7 @@ class TrelloWebhook(object):
     def register(self, webhook):
         webhooks = self.trello.list_webhooks()
         current_app.logger.info(webhooks)
+        current_app.logger.info(webhooks)
         if not [wh for wh in webhooks if wh['callbackURL'] == webhook and wh['idModel'] != self.trello.board]:
             for i in range(5):
                 current_app.logger.info('creating webhook for {}'.format(webhook))
