@@ -4,7 +4,7 @@ class Task(object):
     def __init__(self, module, args):
         self.args = args
         self.module = module
-        self.name = args.iteritems().next()[1].pop('name', None)
+        self.name = args.get('name')
     
     def run(self, conditionals, bindings=None):
         if bindings == None:
