@@ -107,7 +107,7 @@ class Trello(object):
     def create_card(self, name, description, list):
         l = self.list_lists()
         if len(l):
-            idList = l[0]['id']
+            idList = [li for li in l if li['name' == list][0]['id']
         else:
             idList = self.create_list(list)['id']
         return self.request('POST', '/cards', params={'name': name, 'description': description, 'idList': idList})
