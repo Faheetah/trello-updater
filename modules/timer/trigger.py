@@ -73,7 +73,7 @@ class TimerTrigger(object):
 
     def second(self, pattern):
         now = datetime.datetime.now().second
-        logger.info('second :: {} :: {}'.format(pattern, now))
+        logger.debug('second :: {} :: {}'.format(pattern, now))
         if isinstance(pattern, str):
             return pattern == now
         if isinstance(pattern, list):
