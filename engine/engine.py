@@ -75,6 +75,8 @@ class Engine(object):
         return True
 
     def run(self, name, conditionals, bindings=None):
+        if bindings = None:
+            bindings = {}
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
