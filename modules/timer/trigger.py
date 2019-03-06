@@ -1,6 +1,10 @@
 import threading
 import datetime
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class TimerTrigger(object):
     def __init__(self, name, module, callback):
         self.name = name
@@ -28,19 +32,31 @@ class TimerTrigger(object):
         self.callback(spec)
 
     def month(self, pattern):
-        return pattern == datetime.datetime.now().month
+        now = datetime.datetime.now().month
+        logger.info('month :: {} :: {}'.format(pattern, now))
+        return pattern == now
 
     def weekday(self, pattern):
-        return pattern == datetime.datetime.now().weekday()
+        now = datetime.datetime.now().weekday
+        logger.info('weekday :: {} :: {}'.format(pattern, now))
+        return pattern == now
 
     def day(self, pattern):
-        return pattern == datetime.datetime.now().day
+        now = datetime.datetime.now().day
+        logger.info('day :: {} :: {}'.format(pattern, now))
+        return pattern == now
 
     def hour(self, pattern):
-        return pattern == datetime.datetime.now().hour
+        now = datetime.datetime.now().hour
+        logger.info('hour :: {} :: {}'.format(pattern, now))
+        return pattern == now
 
     def minute(self, pattern):
-        return pattern == datetime.datetime.now().minute
+        now = datetime.datetime.now().minute
+        logger.info('minute :: {} :: {}'.format(pattern, now))
+        return pattern == now
 
     def second(self, pattern):
-        return pattern == datetime.datetime.now().second
+        now = datetime.datetime.now().second
+        logger.info('second :: {} :: {}'.format(pattern, now))
+        return pattern == now
