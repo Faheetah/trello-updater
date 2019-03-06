@@ -29,7 +29,7 @@ class TimerTrigger(object):
             "second": self.second
         }
 
-        self.callback(spec)
+        self.callback(spec, bindings=datetime.datetime.now())
 
     def month(self, pattern):
         now = datetime.datetime.now().month
