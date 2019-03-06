@@ -99,7 +99,7 @@ class Trello(object):
     def create_list(self, name):
         return self.request('POST', '/boards/{}/lists'.format(self.board), params={'name': name})
 
-    def create_card(self, name, description, list_name):
+    def create_card(self, name, description, list):
         lists = self.list_lists()
         l = [l for l in lists if l['name'] == list_name]
         if not l:
