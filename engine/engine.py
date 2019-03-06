@@ -11,6 +11,8 @@ class Engine(object):
         else:
             self.ruleset = ruleset
 
+        self.executions = {}
+
         self.modules = {}
         self.init_modules(modules)
 
@@ -19,8 +21,6 @@ class Engine(object):
 
         self.webhooks = {}
         self.init_webhooks()
-
-        self.executions = {}
 
     def init_webhooks(self):
         for name, module in self.modules.iteritems():
@@ -77,14 +77,16 @@ class Engine(object):
     def run(self, name, conditionals, bindings=None):
         if bindings == None:
             bindings = {}
+        bindings.update(conditionals)
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
                     for task in self.jobs[job].tasks:
+                        bindings.update(self.executions.get(job, {}))
                         if task.name:
-                            self.executions[job] = {task.name: task.run(conditionals, bindings.update(self.executions.get('job', {})))}
+                            self.executions[job] = {task.name: task.run(conditionals, bindings)}
                         else:
-                            task.run(conditionals, bindings.update(self.executions.get('job', {})))
+                            task.run(conditionals, bindings)
 
     def callback(self, name):
         def func(conditionals, bindings=None):
