@@ -82,7 +82,7 @@ class Engine(object):
                         if task.name:
                             self.executions[job] = {task.name: task.run(conditionals, bindings.update(self.executions))}
                         else:
-                            task.run(conditionls, bindings.update(self.executions))
+                            task.run(conditionals, bindings.update(self.executions))
 
     def callback(self, name):
         def func(conditionals, bindings=None):

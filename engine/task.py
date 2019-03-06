@@ -18,4 +18,4 @@ class Task(object):
                 else:
                     templated_tasks[k] = v
             print("{0} :: {1}".format(task, templated_tasks))
-            return self.name, self.module.tasks[task_name](**templated_tasks)
+            return self.module.tasks[task_name](**templated_tasks)
