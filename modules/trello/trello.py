@@ -17,6 +17,7 @@ class Trello(object):
             'addLabel': self.add_label,
             'deleteLabel': self.delete_label,
             'createList': self.create_list,
+            'getCard': self.get_card,
             'createCard': self.create_card,
             'createChecklist': self.create_checklist,
         }
@@ -99,6 +100,9 @@ class Trello(object):
     
     def create_list(self, name):
         return self.request('POST', '/boards/{}/lists'.format(self.board), params={'name': name})
+    
+    def get_card(self, name):
+        return [c for c in self.request('GET', '/cards') if c['name'] == name][0]
 
     def create_card(self, name, description, list):
         l = self.list_lists()
