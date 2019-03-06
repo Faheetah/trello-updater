@@ -82,9 +82,9 @@ class Engine(object):
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
                     for task in self.jobs[job].tasks:
                         if task.name:
-                            self.executions[job] = {task.name: task.run(conditionals, bindings.update(self.executions[job]))}
+                            self.executions[job] = {task.name: task.run(conditionals, bindings.update(self.executions.get('job', {}))}
                         else:
-                            task.run(conditionals, bindings.update(self.executions[job]))
+                            task.run(conditionals, bindings.update(self.executions.get('job', {})))
 
     def callback(self, name):
         def func(conditionals, bindings=None):
