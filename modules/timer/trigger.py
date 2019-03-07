@@ -43,41 +43,41 @@ class TimerTrigger(object):
             return now in pattern
 
     def weekday(self, pattern):
-        now = datetime.datetime.now().weekday
+        now = datetime.datetime.now().weekday()
         logger.info('weekday :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, str):
-            return pattern == now
         if isinstance(pattern, list):
             return now in pattern
+        else:
+            return now == pattern
 
     def day(self, pattern):
         now = datetime.datetime.now().day
         logger.info('day :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, str):
-            return pattern == now
         if isinstance(pattern, list):
             return now in pattern
+        else:
+            return now == pattern
 
     def hour(self, pattern):
         now = datetime.datetime.now().hour
         logger.info('hour :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, str):
-            return pattern == now
         if isinstance(pattern, list):
             return now in pattern
+        else:
+            return now == pattern
 
     def minute(self, pattern):
         now = datetime.datetime.now().minute
         logger.info('minute :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, str):
-            return pattern == now
         if isinstance(pattern, list):
             return now in pattern
+        else:
+            return now == pattern
 
     def second(self, pattern):
         now = datetime.datetime.now().second
         logger.debug('second :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, str):
-            return pattern == now
         if isinstance(pattern, list):
             return now in pattern
+        else:
+            return now == pattern
