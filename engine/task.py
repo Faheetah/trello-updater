@@ -26,7 +26,7 @@ class Task(object):
             templated_tasks = {}
             for k, v in self.args[task][task_name].iteritems(): 
                 if isinstance(v, basestring):
-                    templated_tasks[k] = Template(v).render(**bindings)
+                    templated_tasks[k] = str(Template(v).render(**bindings))
                 else:
                     templated_tasks[k] = v
             print("{0} :: {1}".format(task, templated_tasks))
