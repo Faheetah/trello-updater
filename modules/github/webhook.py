@@ -18,7 +18,7 @@ class GithubWebhook(object):
         json = request.get_json()
     
         if json:
-            # message = u'{} :: {} :: {} :: {}'.format(json['type'], json['id'], json.get('data').get('board', {}).get('name'), json.get('data').get('card', {}).get('name'))
+            message = u'{} :: {} :: {} :: {}'.format(json['ref'], json['before'], json['after'], json['pusher']['name'])
             current_app.logger.info(request.data)
     
         self.callback(json)
