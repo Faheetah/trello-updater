@@ -11,6 +11,11 @@ class Task(object):
         self.name = args.get('name')
         self.loop = args.get('loop')
     
+    def get_loop(self, bindings=None):
+        if isinstance(self.loop, str) or isinstance(self.loop, unicode):
+            return Template(self.loop).render(**bindings)
+        return self.loop
+
     def run(self, conditionals, bindings=None):
         if bindings == None:
             bindings = conditionals
