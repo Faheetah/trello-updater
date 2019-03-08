@@ -40,10 +40,26 @@ def parse():
         # logging.basicConfig(filename='flask.log',level=logging.INFO)
 
     with open(args.config, 'r') as t:
-        config = yaml.load(t)
+        config = roll_up_keys(yaml.load(t))
 
     return args, extra_args, config
 
+def roll_up_keys(yaml):
+    if isinstance(yaml, list):
+        for v in yaml:
+            roll_up_keys(v)
+    elif isinstance(yaml, dict):
+        f = {}
+        for k,v in yaml.iteritems():
+            print(k,v)
+            items = k.split(':')
+            if(len(items) > 1):
+                newv = {':'.join(items[1:]): v}
+                f[items[0]] = newv
+                yaml[items[0]] = newv
+                del yaml[k]
+            roll_up_keys(yaml[items[0]])
+    return yaml
 
 def main():
     args, extra_args, config = parse()
