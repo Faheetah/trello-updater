@@ -1,5 +1,9 @@
+import logging
+
 from jinja2 import Template
 
+logger = logging.getLogger(__name__)
+o
 class Task(object):
     def __init__(self, module, args):
         self.args = args
@@ -10,6 +14,7 @@ class Task(object):
     def run(self, conditionals, bindings=None):
         if bindings == None:
             bindings = conditionals
+        logger.debug(bindings)
         for task in self.args: 
             task_name = self.args[task].keys()[0] 
             templated_tasks = {}
