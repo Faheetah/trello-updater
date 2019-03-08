@@ -12,9 +12,12 @@ class Shell(object):
         }
 
     def run(self, command, chdir=None, env=None, shell=True):
+        if not shell:
+            command = shlex.split(command)
+
         proc = Popen(command, stdout=PIPE, stderr=PIPE, cwd=chdir, env=env, shell=shell)
         out, err = proc.communicate()
         exitcode = proc.returncode
-        logger.debug("\n{}\n\n{}\n".format(out, err))
+        logger.debug("\n{}\n\n{}\n".format(str(out), str(err)))
         logger.info("{} :: {}".format(command, exitcode))
         return {"stdout": out, "stderr": err, "rc": exitcode}
