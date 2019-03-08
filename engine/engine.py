@@ -62,7 +62,7 @@ class Engine(object):
             return right(left)
 
         if isinstance(left, str):
-            return re.search(right, left)
+            return re.search(left, right)
         
         if not isinstance(left, dict):
             return left == right
