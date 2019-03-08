@@ -34,10 +34,10 @@ def parse():
 
     args, extra_args = parser.parse_known_args()
 
-    # if args.verbose:
-        # logging.basicConfig(filename='flask.log',level=logging.DEBUG)
-    # else:
-        # logging.basicConfig(filename='flask.log',level=logging.INFO)
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     with open(args.config, 'r') as t:
         config = roll_up_keys(yaml.load(t))

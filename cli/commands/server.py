@@ -12,8 +12,6 @@ from engine import Engine
 def main(config, *args):
     'start a webhook server for trello'
 
-    logging.basicConfig(level=logging.INFO)
-
     app = Flask(__name__)
     app.logger.addHandler(logging.StreamHandler(sys.stdout))
 
