@@ -88,10 +88,12 @@ class Engine(object):
                             self.executions[job] = {task.name: []}
                             for k, v in task.loop.iteritems():
                                 # don't pollute bindings, add each run through the loop to a list in executions
-                                self.executions[job][task.name].append(task.run(conditionals, bindings.copy().update({k: v})))
+                                local_bindings = bindings.copy()
+                                self.executions[job][task.name].append(task.run(conditionals, local_bindings.update({k: v})))
                         elif task.loop:
                             for k, v in task.loop.iteritems():
-                                task.run(conditionals, bindings.copy().update({k: v}))
+                                local_bindings = bindings.copy()
+                                task.run(conditionals, local_bindings.update({k: v}))
                         elif task.name:
                             self.executions[job] = {task.name: task.run(conditionals, bindings)}
                         else:
