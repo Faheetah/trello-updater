@@ -95,7 +95,7 @@ class Engine(object):
                                     # don't pollute bindings, add each run through the loop to a list in executions
                                     local_bindings = bindings.copy()
                                     local_bindings.update({k: i})
-                                    self.executions[job][task.name].append(yaml.dump(task.run(conditionals, local_bindings)))
+                                    self.executions[job][task.name].append(task.run(conditionals, local_bindings))
                         elif loop:
                             for k, v in loop.iteritems():
                                 for i in v:
