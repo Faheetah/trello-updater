@@ -28,7 +28,7 @@ def main(config, *args):
     if pid == 0:
         _, _, config = cli.parse()
         for name, webhook in engine.webhooks.iteritems():
-            if getattr(webhook, 'blueprint', None):
+            if getattr(webhook, 'blueprint', None) and getattr(webhook, 'register', None):
                 with app.app_context():
                     webhook_url = '/'.join((config['config'][name]['webhook'], name))
                     webhook.register(webhook_url)
