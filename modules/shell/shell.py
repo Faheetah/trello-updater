@@ -11,10 +11,10 @@ class Shell(object):
             'run': self.run
         }
 
-    def run(self, command):
+    def run(self, command, chdir=None, env=None):
         args = shlex.split(command)
 
-        proc = Popen(args, stdout=PIPE, stderr=PIPE)
+        proc = Popen(args, stdout=PIPE, stderr=PIPE, cwd=chdir, env=env)
         out, err = proc.communicate()
         exitcode = proc.returncode
         logger.info("{} :: {}".format(command, exitcode))
