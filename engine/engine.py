@@ -94,7 +94,7 @@ class Engine(object):
                                     local_bindings.update({k: i})
                                     self.executions[job][task.name].append(task.run(conditionals, local_bindings))
                         elif loop:
-                            for k, v in task.iteritems():
+                            for k, v in loop.iteritems():
                                 for i in v:
                                     local_bindings = bindings.copy()
                                     local_bindings.update({k: i})
