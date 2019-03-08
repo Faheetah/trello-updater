@@ -84,7 +84,7 @@ class Engine(object):
                     for task in self.jobs[job].tasks:
                         bindings.update(self.executions.get(job, {}))
                         # @todo refactor cleaner
-                        loop = task.get_loop()
+                        loop = task.get_loop(bindings)
                         if loop and task.name:
                             self.executions[job] = {task.name: []}
                             for k, v in loop.iteritems():
