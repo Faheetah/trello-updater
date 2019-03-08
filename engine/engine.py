@@ -87,15 +87,17 @@ class Engine(object):
                         if task.loop and task.name:
                             self.executions[job] = {task.name: []}
                             for k, v in task.loop.iteritems():
-                                # don't pollute bindings, add each run through the loop to a list in executions
-                                local_bindings = bindings.copy()
-                                local_bindings.update({k: v})
-                                self.executions[job][task.name].append(task.run(conditionals, local_bindings))
+                                for i in v:
+                                    # don't pollute bindings, add each run through the loop to a list in executions
+                                    local_bindings = bindings.copy()
+                                    local_bindings.update({k: i})
+                                    self.executions[job][task.name].append(task.run(conditionals, local_bindings))
                         elif task.loop:
                             for k, v in task.loop.iteritems():
-                                local_bindings = bindings.copy()
-                                local_bindings.update({k: v})
-                                task.run(conditionals, local_bindings)
+                                for i in v:
+                                    local_bindings = bindings.copy()
+                                    local_bindings.update({k: i})
+                                    task.run(conditionals, local_bindings)
                         elif task.name:
                             self.executions[job] = {task.name: task.run(conditionals, bindings)}
                         else:
