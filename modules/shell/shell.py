@@ -20,4 +20,4 @@ class Shell(object):
         exitcode = proc.returncode
         logger.debug("\n{}\n\n{}\n".format(out, err))
         logger.info("{} :: {}".format(command, exitcode))
-        return {"stdout": unicode(out, "utf8"), "stderr": unicode(err, "utf8"), "rc": exitcode}
+        return {"stdout": unicode(out.replace('\n', '\\n'), "utf8"), "stderr": unicode(err.replace('\n', '\\n'), "utf8"), "rc": exitcode}
