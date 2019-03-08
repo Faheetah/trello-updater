@@ -3,7 +3,7 @@ import logging
 from jinja2 import Template
 
 logger = logging.getLogger(__name__)
-o
+
 class Task(object):
     def __init__(self, module, args):
         self.args = args
