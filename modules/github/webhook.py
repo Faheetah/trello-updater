@@ -19,7 +19,7 @@ class GithubWebhook(object):
     
         if json:
             message = u'{} :: {} :: {} :: {}'.format(json['ref'], json['before'], json['after'], json['pusher']['name'])
-            current_app.logger.info(request.data)
+            current_app.logger.info(message)
     
         self.callback(json)
     
