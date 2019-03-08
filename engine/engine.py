@@ -85,6 +85,9 @@ class Engine(object):
                         bindings.update(self.executions.get(job, {}))
                         # @todo refactor cleaner
                         loop = task.get_loop(bindings)
+                        for k, v in loop.iteritems():
+                            if isinstance(v, str) or isinstance(v, unicode):
+                                loop[k] = yaml.load(v)
                         if loop and task.name:
                             self.executions[job] = {task.name: []}
                             for k, v in loop.iteritems():
@@ -92,7 +95,7 @@ class Engine(object):
                                     # don't pollute bindings, add each run through the loop to a list in executions
                                     local_bindings = bindings.copy()
                                     local_bindings.update({k: i})
-                                    self.executions[job][task.name].append(task.run(conditionals, local_bindings))
+                                    self.executions[job][task.name].append(yaml.dump(task.run(conditionals, local_bindings)))
                         elif loop:
                             for k, v in loop.iteritems():
                                 for i in v:
@@ -100,7 +103,7 @@ class Engine(object):
                                     local_bindings.update({k: i})
                                     task.run(conditionals, local_bindings)
                         elif task.name:
-                            self.executions[job] = {task.name: task.run(conditionals, bindings)}
+                            self.executions[job] = {task.name: yaml.dump(task.run(conditionals, bindings))}
                         else:
                             task.run(conditionals, bindings)
 

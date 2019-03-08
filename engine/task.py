@@ -15,7 +15,7 @@ class Task(object):
     def get_loop(self, bindings=None):
         for k, v in self.loop.iteritems():
             if isinstance(v, str) or isinstance(v, unicode):
-                return {k: yaml.load(Template(v).render(**bindings))}
+                return {k: Template(v).render(**bindings)}
         return self.loop
 
     def run(self, conditionals, bindings=None):
@@ -26,7 +26,7 @@ class Task(object):
             templated_tasks = {}
             for k, v in self.args[task][task_name].iteritems(): 
                 if isinstance(v, basestring):
-                    templated_tasks[k] = str(Template(v).render(**bindings))
+                    templated_tasks[k] = Template(v).render(**bindings)
                 else:
                     templated_tasks[k] = v
             print("{0} :: {1}".format(task, templated_tasks))
