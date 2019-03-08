@@ -105,7 +105,7 @@ class Engine(object):
                                     local_bindings.update({k: i})
                                     task.run(conditionals, local_bindings)
                         elif task.name:
-                            self.executions[job] = {task.name: yaml.dump(task.run(conditionals, bindings))}
+                            self.executions[job] = {task.name: task.run(conditionals, bindings)}
                         else:
                             task.run(conditionals, bindings)
 
