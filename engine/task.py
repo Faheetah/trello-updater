@@ -14,7 +14,6 @@ class Task(object):
     def run(self, conditionals, bindings=None):
         if bindings == None:
             bindings = conditionals
-        logger.debug(bindings)
         for task in self.args: 
             task_name = self.args[task].keys()[0] 
             templated_tasks = {}
