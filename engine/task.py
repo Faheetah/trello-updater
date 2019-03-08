@@ -13,7 +13,7 @@ class Task(object):
         self.loop = args.get('loop')
     
     def get_loop(self, bindings=None):
-        for k, v in self.loop:
+        for k, v in self.loop.iteritems():
             if isinstance(v, str) or isinstance(v, unicode):
                 return {k: yaml.load(Template(v).render(**bindings))}
         return self.loop
