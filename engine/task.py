@@ -13,8 +13,9 @@ class Task(object):
         self.loop = args.get('loop')
     
     def get_loop(self, bindings=None):
-        if isinstance(self.loop, str) or isinstance(self.loop, unicode):
-            return yaml.load(Template(self.loop).render(**bindings))
+        for k, v in self.loop:
+            if isinstance(v, str) or isinstance(v, unicode):
+                return {k: yaml.load(Template(v).render(**bindings))}
         return self.loop
 
     def run(self, conditionals, bindings=None):
