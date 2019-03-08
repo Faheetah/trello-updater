@@ -84,10 +84,12 @@ class Engine(object):
                     for task in self.jobs[job].tasks:
                         bindings.update(self.executions.get(job, {}))
                         # @todo refactor cleaner
-                        loop = task.get_loop(bindings)
-                        for k, v in loop.iteritems():
-                            if isinstance(v, str) or isinstance(v, unicode):
-                                loop[k] = yaml.load(v)
+                        loop = None
+                        if task.loop:
+                            loop = task.get_loop(bindings)
+                            for k, v in loop.iteritems():
+                                if isinstance(v, str) or isinstance(v, unicode):
+                                    loop[k] = yaml.load(v)
                         if loop and task.name:
                             self.executions[job] = {task.name: []}
                             for k, v in loop.iteritems():
