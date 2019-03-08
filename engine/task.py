@@ -5,6 +5,7 @@ class Task(object):
         self.args = args
         self.module = module
         self.name = args.get('name')
+        self.loop = args.get('loop')
     
     def run(self, conditionals, bindings=None):
         if bindings == None:

@@ -51,7 +51,6 @@ def roll_up_keys(yaml):
     elif isinstance(yaml, dict):
         f = {}
         for k,v in yaml.iteritems():
-            print(k,v)
             items = k.split(':')
             if(len(items) > 1):
                 newv = {':'.join(items[1:]): v}

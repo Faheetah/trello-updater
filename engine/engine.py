@@ -83,7 +83,16 @@ class Engine(object):
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
                     for task in self.jobs[job].tasks:
                         bindings.update(self.executions.get(job, {}))
-                        if task.name:
+                        # @todo refactor cleaner
+                        if task.loop and task.name:
+                            self.executions[job][task.name] = []
+                            for k, v in task.loop.iteritems():
+                                # don't pollute bindings, add each run through the loop to a list in executions
+                                self.executions[job][task.name].append(task.run(conditionals, bindings.copy().update({k: v})))
+                        elif task.loop:
+                            for k, v in task.loop.iteritems():
+                                task.run(conditionals, bindings.copy().update({k: v}))
+                        elif task.name:
                             self.executions[job] = {task.name: task.run(conditionals, bindings)}
                         else:
                             task.run(conditionals, bindings)
