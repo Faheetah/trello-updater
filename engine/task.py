@@ -1,4 +1,5 @@
 import logging
+import yaml
 
 from jinja2 import Template
 
@@ -13,7 +14,7 @@ class Task(object):
     
     def get_loop(self, bindings=None):
         if isinstance(self.loop, str) or isinstance(self.loop, unicode):
-            return Template(self.loop).render(**bindings)
+            return yaml.load(Template(self.loop).render(**bindings))
         return self.loop
 
     def run(self, conditionals, bindings=None):
