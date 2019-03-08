@@ -85,7 +85,7 @@ class Engine(object):
                         bindings.update(self.executions.get(job, {}))
                         # @todo refactor cleaner
                         if task.loop and task.name:
-                            self.executions[job][task.name] = []
+                            self.executions[job] = {task.name: []}
                             for k, v in task.loop.iteritems():
                                 # don't pollute bindings, add each run through the loop to a list in executions
                                 self.executions[job][task.name].append(task.run(conditionals, bindings.copy().update({k: v})))
