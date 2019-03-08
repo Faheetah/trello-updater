@@ -18,6 +18,6 @@ class Shell(object):
         proc = Popen(command, stdout=PIPE, stderr=PIPE, cwd=chdir, env=env, shell=shell)
         out, err = proc.communicate()
         exitcode = proc.returncode
-        logger.debug("\n{}\n\n{}\n".format(str(out), str(err)))
+        logger.debug("\n{}\n\n{}\n".format(out, err))
         logger.info("{} :: {}".format(command, exitcode))
-        return {"stdout": out, "stderr": err, "rc": exitcode}
+        return {"stdout": unicode(out, "utf8"), "stderr": unicode(err, "utf8"), "rc": exitcode}
