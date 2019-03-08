@@ -15,5 +15,6 @@ class Shell(object):
         proc = Popen(command, stdout=PIPE, stderr=PIPE, cwd=chdir, env=env)
         out, err = proc.communicate()
         exitcode = proc.returncode
+        logger.debug("\n{}\n\n{}\n".format(out, err))
         logger.info("{} :: {}".format(command, exitcode))
         return {"stdout": out, "stderr": err, "rc": exitcode}
