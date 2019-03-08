@@ -87,14 +87,14 @@ class Engine(object):
                         if task.loop and task.name:
                             self.executions[job] = {task.name: []}
                             for k, v in task.loop.iteritems():
-                                for i in v:
+                                for i in yaml.load(v):
                                     # don't pollute bindings, add each run through the loop to a list in executions
                                     local_bindings = bindings.copy()
                                     local_bindings.update({k: i})
                                     self.executions[job][task.name].append(task.run(conditionals, local_bindings))
                         elif task.loop:
                             for k, v in task.loop.iteritems():
-                                for i in v:
+                                for i in yaml.load(v):
                                     local_bindings = bindings.copy()
                                     local_bindings.update({k: i})
                                     task.run(conditionals, local_bindings)
