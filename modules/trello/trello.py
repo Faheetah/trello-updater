@@ -26,7 +26,7 @@ class Trello(object):
         self.triggers = [TrelloWebhook]
 
     def request(self, method, uri, *args, **kwargs):
-        url = '/'.join((self.endpoint, uri))
+        url = self.endpoint + uri
         auth = {"key": self.api_key, "token": self.api_token}
         
         if 'params' in kwargs:
