@@ -15,7 +15,10 @@ class Task(object):
     def get_loop(self, bindings=None):
         for k, v in self.loop.iteritems():
             if isinstance(v, str) or isinstance(v, unicode):
-                return {k: Template(v).render(**bindings)}
+                loop = {k: Template(v).render(**bindings)}
+                logger.debug(loop)
+                return loop
+        logger.debug(self.loop)
         return self.loop
 
     def run(self, conditionals, bindings=None):
