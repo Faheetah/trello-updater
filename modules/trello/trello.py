@@ -20,6 +20,7 @@ class Trello(object):
             'getCard': self.get_card,
             'createCard': self.create_card,
             'createChecklist': self.create_checklist,
+            "search": self.search,
         }
 
         self.triggers = [TrelloWebhook]
@@ -64,18 +65,20 @@ class Trello(object):
         l = [l for l in labels if l.name == label][0]
         return self.request('POST', '/cards/{0}/idLabels'.format(card), params={'value': l.id})
 
-    def search(self, query='', is_open=True, board=None):
+    def search(self, query='', is_open=True, board=None, limit=100):
         board = board or self.board
         is_open = 'is:open' if is_open else ''
 
         params = {
             'query': '{0} board:{1} {2}'.format(query, self.board, is_open),
             'boardId': self.board,
-            'cards_limit': 100
+            'cards_limit': limit
         }
 
         req = self.request('GET', '/search', params=params)
-        return [Card(self, **c) for c in req.get('cards')]
+        return req
+        # we want to eventually revert this but engine can't understand card items yet
+        # return [Card(self, **c) for c in req.get('cards')]
 
     def add_webhook(self, callbackURL, idModel=None):
         if idModel is None:
