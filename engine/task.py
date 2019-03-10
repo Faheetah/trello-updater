@@ -13,15 +13,18 @@ class Task(object):
         self.loop = args.get('loop')
     
     def get_loop(self, bindings=None):
-        logger.debug(self.loop)
         for k, v in self.loop.iteritems():
             if not v or v == '':
                 logger.debug({k: []})
                 return {k: []}
             if isinstance(v, str) or isinstance(v, unicode):
                 loop = {k: Template(v).render(**bindings)}
+                if not loop[k]:
+                    logger.debug({k: []})
+                    return {k: []}
                 logger.debug(loop)
                 return loop
+        logger.debug(self.loop)
         return self.loop
 
     def run(self, conditionals, bindings=None):
