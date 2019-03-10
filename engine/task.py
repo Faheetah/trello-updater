@@ -14,7 +14,7 @@ class Task(object):
     
     def get_loop(self, bindings=None):
         for k, v in self.loop.iteritems():
-            if not v or v == '':
+            if not v:
                 logger.debug({k: []})
                 return {k: []}
             if isinstance(v, str) or isinstance(v, unicode):
