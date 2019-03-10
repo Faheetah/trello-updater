@@ -66,6 +66,8 @@ class Trello(object):
         return self.request('POST', '/cards/{0}/idLabels'.format(card), params={'value': l.id})
 
     def search(self, query, is_open=True, board=None, limit=100):
+        if query == None:
+            query = ''
         board = board or self.board
         is_open = 'is:open' if is_open else ''
 
