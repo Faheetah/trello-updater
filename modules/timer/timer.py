@@ -28,8 +28,8 @@ class Timer(object):
     # diff handling won't be accurate due to utc conversion, especially with dst
     def weekday(self, weekday, time="12:00:00"):
         replace = datetime.strptime(time, "%H:%M:%S")
-        now = datetime.now().replace(hour=replace.hour, minute=replace.minute, second=replace.second)
+        now = datetime.now()
         tz = datetime.utcnow() - now
         delta = timedelta((7 + DAYS.get(weekday.lower()) - now.weekday()) % 7)
-        wd = now + delta + tz
+        wd = now.replace(hour=replace.hour, minute=replace.minute, second=replace.second) + delta + tz
         return wd.isoformat()
