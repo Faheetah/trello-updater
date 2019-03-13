@@ -26,10 +26,10 @@ class Timer(object):
         time.sleep(length)
 
     # diff handling won't be accurate due to utc conversion, especially with dst
-def weekday(weekday, time="12:00:00"):
-    now = datetime.now()
-    tz = datetime.utcnow() - now
-    delta = timedelta((7 + DAYS.get(weekday.lower()) - now.weekday()) % 7)
-    wd = now + delta + tz
-    replace = datetime.strptime(time, "%H:%M:%S")
-    return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat()
+    def weekday(self, weekday, time="12:00:00"):
+        now = datetime.now()
+        tz = datetime.utcnow() - now
+        delta = timedelta((7 + DAYS.get(weekday.lower()) - now.weekday()) % 7)
+        wd = now + delta + tz
+        replace = datetime.strptime(time, "%H:%M:%S")
+        return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat()
