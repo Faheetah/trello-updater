@@ -17,7 +17,7 @@ DAYS = [
 class Timer(object):
     def __init__(self, *args, **kwargs):
         self.tasks = {
-            'weekday': self.sleep,
+            'weekday': self.weekday,
             'sleep': self.sleep
         }
 
