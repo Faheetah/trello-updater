@@ -3,16 +3,15 @@ from datetime import datetime, timedelta
 
 from trigger import TimerTrigger
 
-# Order matters here, matches the datetime weekends
-DAYS = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday"
-]
+DAYS = {
+    "monday": 1,
+    "tuesday": 2,
+    "wednesday": 3,
+    "thursday": 4,
+    "friday": 5,
+    "saturday": 6,
+    "sunday": 7
+}
 
 class Timer(object):
     def __init__(self, *args, **kwargs):
@@ -28,8 +27,8 @@ class Timer(object):
 
     def weekday(self, weekday, time="00:00:00"):
         now = datetime.now()
+        tz = datetime.utcnow() - now
         delta = timedelta((7 + DAYS.index(weekday.lower()) - now.weekday()) % 7)
-        wd = now + delta
+        wd = now + delta + tz
         replace = datetime.strptime(time, "%H:%M:%S")
         return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat()
-    
