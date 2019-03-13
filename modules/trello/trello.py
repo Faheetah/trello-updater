@@ -128,4 +128,4 @@ class Trello(object):
 
     # refactor to pass card object, then we can make calls like 
     def update_card(self, card, params):
-        return self.request('PUT', '/cards/{}'.format(card, params=params))
+        return self.request('PUT', '/cards/{}'.format(card), params=params))
