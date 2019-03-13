@@ -28,7 +28,7 @@ class Timer(object):
     def weekday(self, weekday, time="00:00:00"):
         now = datetime.now()
         tz = datetime.utcnow() - now
-        delta = timedelta((7 + DAYS.index(weekday.lower()) - now.weekday()) % 7)
+        delta = timedelta((7 + DAYS.get(weekday.lower()) - now.weekday()) % 7)
         wd = now + delta + tz
         replace = datetime.strptime(time, "%H:%M:%S")
         return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat()
