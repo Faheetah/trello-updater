@@ -31,5 +31,5 @@ class Timer(object):
         delta = timedelta((7 + DAYS.index(weekday.lower()) - now.weekday()) % 7)
         wd = now + delta
         replace = datetime.strptime(time, "%H:%M:%S")
-        return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat
+        return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat()
     
