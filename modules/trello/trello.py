@@ -131,8 +131,9 @@ class Trello(object):
                 self.request('POST', '/checklists/{}/checkItems/'.format(checklist['id']), params={'name': item})
 
     # refactor to pass card object, then we can make calls like 
-    def update_card(self, card, due=None):
+    def update_card(self, card, due=None, idList=None):
         params = {
+            'idList': idList,
             'due': due
         }
         return self.request('PUT', '/cards/{}'.format(card), params=params)
