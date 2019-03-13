@@ -21,7 +21,7 @@ class Trello(object):
             'createList': self.create_list,
             'getCard': self.get_card,
             'createCard': self.create_card,
-            'updateCard': self.create_card,
+            'updateCard': self.update_card,
             'createChecklist': self.create_checklist,
             "search": self.search,
         }
