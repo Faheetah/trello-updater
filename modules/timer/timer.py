@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 from trigger import TimerTrigger
 
 DAYS = {
-    "monday": 1,
-    "tuesday": 2,
-    "wednesday": 3,
-    "thursday": 4,
-    "friday": 5,
-    "saturday": 6,
-    "sunday": 7
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6
 }
 
 class Timer(object):
@@ -25,10 +25,11 @@ class Timer(object):
     def sleep(self, length):
         time.sleep(length)
 
-    def weekday(self, weekday, time="00:00:00"):
-        now = datetime.now()
-        tz = datetime.utcnow() - now
-        delta = timedelta((7 + DAYS.get(weekday.lower()) - now.weekday()) % 7)
-        wd = now + delta + tz
-        replace = datetime.strptime(time, "%H:%M:%S")
-        return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat()
+    # diff handling won't be accurate due to utc conversion, especially with dst
+def weekday(weekday, time="12:00:00"):
+    now = datetime.now()
+    tz = datetime.utcnow() - now
+    delta = timedelta((7 + DAYS.get(weekday.lower()) - now.weekday()) % 7)
+    wd = now + delta + tz
+    replace = datetime.strptime(time, "%H:%M:%S")
+    return wd.replace(hour=replace.hour, minute=replace.minute, second=replace.second).isoformat()
