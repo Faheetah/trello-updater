@@ -5,6 +5,8 @@ from api.label import Label
 
 from webhook import TrelloWebhook
 
+# https://developers.trello.com/reference/#introduction
+
 class Trello(object):
     def __init__(self, api_key, api_token, board, endpoint=None, *args, **kwargs):
         self.api_key = api_key
@@ -19,6 +21,7 @@ class Trello(object):
             'createList': self.create_list,
             'getCard': self.get_card,
             'createCard': self.create_card,
+            'updateCard': self.create_card,
             'createChecklist': self.create_checklist,
             "search": self.search,
         }
@@ -122,3 +125,7 @@ class Trello(object):
         if checkItems:
             for item in checkItems:
                 self.request('POST', '/checklists/{}/checkItems/'.format(checklist['id']), params={'name': item})
+
+    # refactor to pass card object, then we can make calls like 
+    def update_card(self, card, params):
+        return self.request('PUT', '/cards/{}'.format(card, params))
