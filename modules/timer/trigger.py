@@ -33,51 +33,34 @@ class TimerTrigger(object):
         # to generate time right, will cause possible off by 1 but for now shouldn't be
         # too impacting
         self.callback(spec, bindings={x: getattr(now, x) for x in dir(now)})
+    
+    def parse_date(self, name, pattern, now):
+        logger.debug('{} :: {} :: {}'.format(name, pattern, now))
+        if isinstance(pattern, str) and pattern == now:
+            return now
+        if isinstance(pattern, list) and now in pattern:
+            return now
 
     def month(self, pattern):
         now = datetime.datetime.now().month
-        logger.debug('month :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, str):
-            return pattern == now
-        if isinstance(pattern, list):
-            return now in pattern
+        return self.parse_date('month', pattern, now)
 
     def weekday(self, pattern):
         now = datetime.datetime.now().weekday()
-        logger.debug('weekday :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, list):
-            return now in pattern
-        else:
-            return now == pattern
+        return self.parse_date('weekday', pattern, now)
 
     def day(self, pattern):
         now = datetime.datetime.now().day
-        logger.debug('day :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, list):
-            return now in pattern
-        else:
-            return now == pattern
+        return self.parse_date('day', pattern, now)
 
     def hour(self, pattern):
         now = datetime.datetime.now().hour
-        logger.debug('hour :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, list):
-            return now in pattern
-        else:
-            return now == pattern
+        return self.parse_date('hour', pattern, now)
 
     def minute(self, pattern):
         now = datetime.datetime.now().minute
-        logger.debug('minute :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, list):
-            return now in pattern
-        else:
-            return now == pattern
+        return self.parse_date('minute', pattern, now)
 
     def second(self, pattern):
         now = datetime.datetime.now().second
-        logger.debug('second :: {} :: {}'.format(pattern, now))
-        if isinstance(pattern, list):
-            return now in pattern
-        else:
-            return now == pattern
+        return self.parse_date('second', pattern, now)
