@@ -70,11 +70,14 @@ class Engine(object):
             return right(left)
 
         if isinstance(left, str):
-            return re.search(left, right)
+            search = re.search(left, right)
+            if search:
+                return search.string
+            return False
         
         if not isinstance(left, dict):
             if left == right:
-                return left
+                return right
             else:
                 return False
 
