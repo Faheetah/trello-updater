@@ -114,7 +114,7 @@ class Trello(object):
         return self.request('POST', '/boards/{}/lists'.format(self.board), params={'name': name})
     
     def get_card(self, name=None, idCard=None):
-        if cardId:
+        if idCard:
             return self.request('GET', '/cards/{}'.format(idCard))
         if name:
             return [c for c in self.request('GET', '/boards/{}/cards'.format(self.board)) if c['name'] == name][0]
