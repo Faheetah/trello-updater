@@ -10,6 +10,7 @@ fill_in_groceries:
       data:card:name: Groceries
   tasks:
   - trello:addLabel:
+      # use trigger data
       card: "{{ data.card.id }}"
       label: Planning
   - name: create_card
@@ -19,4 +20,13 @@ fill_in_groceries:
   - trello:createChecklist:
       card: "{{ create_card.id }}"
       name: General
+  # can inline anything including using only a single arg in a module, this calls trello.search(query='-created:7')
+  - name: search_created_cards
+    trello:search:query: "-created:7"
+  # have to use tojson for now, loop over each card in the result set
+  # the card param is the name the var will bind to
+  - loop:card: "{{ search_created_cards.cards|tojson }}"
+    trello:addLabel:
+      card: "{{ card.id }}"
+      label: Planning
 ```

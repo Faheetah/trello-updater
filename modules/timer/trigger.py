@@ -36,7 +36,7 @@ class TimerTrigger(object):
 
     def month(self, pattern):
         now = datetime.datetime.now().month
-        logger.info('month :: {} :: {}'.format(pattern, now))
+        logger.debug('month :: {} :: {}'.format(pattern, now))
         if isinstance(pattern, str):
             return pattern == now
         if isinstance(pattern, list):
@@ -44,7 +44,7 @@ class TimerTrigger(object):
 
     def weekday(self, pattern):
         now = datetime.datetime.now().weekday()
-        logger.info('weekday :: {} :: {}'.format(pattern, now))
+        logger.debug('weekday :: {} :: {}'.format(pattern, now))
         if isinstance(pattern, list):
             return now in pattern
         else:
@@ -52,7 +52,7 @@ class TimerTrigger(object):
 
     def day(self, pattern):
         now = datetime.datetime.now().day
-        logger.info('day :: {} :: {}'.format(pattern, now))
+        logger.debug('day :: {} :: {}'.format(pattern, now))
         if isinstance(pattern, list):
             return now in pattern
         else:
@@ -60,7 +60,7 @@ class TimerTrigger(object):
 
     def hour(self, pattern):
         now = datetime.datetime.now().hour
-        logger.info('hour :: {} :: {}'.format(pattern, now))
+        logger.debug('hour :: {} :: {}'.format(pattern, now))
         if isinstance(pattern, list):
             return now in pattern
         else:
@@ -68,7 +68,7 @@ class TimerTrigger(object):
 
     def minute(self, pattern):
         now = datetime.datetime.now().minute
-        logger.info('minute :: {} :: {}'.format(pattern, now))
+        logger.debug('minute :: {} :: {}'.format(pattern, now))
         if isinstance(pattern, list):
             return now in pattern
         else:
