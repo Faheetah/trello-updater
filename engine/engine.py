@@ -98,7 +98,7 @@ class Engine(object):
             bindings = {}
         # webhook this is the json
         # something like timer this is the spec with funcs
-        bindings.update({"conditionals": conditionals})
+        bindings.update(conditionals)
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
