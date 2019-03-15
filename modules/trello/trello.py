@@ -106,8 +106,12 @@ class Trello(object):
     def create_list(self, name):
         return self.request('POST', '/boards/{}/lists'.format(self.board), params={'name': name})
     
-    def get_card(self, name):
-        return [c for c in self.request('GET', '/boards/{}/cards'.format(self.board)) if c['name'] == name][0]
+    def get_card(self, name=None, idCard=None):
+        if cardId:
+            return self.request('GET', '/cards/{}'.format(cardId)
+        if name:
+            return [c for c in self.request('GET', '/boards/{}/cards'.format(self.board)) if c['name'] == name][0]
+        return False
 
     def create_card(self, name, description, list):
         l = self.list_lists()
