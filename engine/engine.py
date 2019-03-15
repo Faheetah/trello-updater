@@ -74,7 +74,7 @@ class Engine(object):
         
         if not isinstance(left, dict):
             if left == right:
-                return right
+                return left
             else:
                 return False
 
