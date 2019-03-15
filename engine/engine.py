@@ -1,15 +1,17 @@
+import inspect
 import re
 import yaml
+
+import logging
 
 from task import Task
 from job import Job
 
+logger = logging.getLogger(__name__)
+
 class Engine(object):
     def __init__(self, ruleset, modules):
-        if isinstance(ruleset, str):
-            self.ruleset = yaml.load(ruleset)
-        else:
-            self.ruleset = ruleset
+        self.ruleset = ruleset
 
         self.executions = {}
 
@@ -38,7 +40,12 @@ class Engine(object):
     def init_modules(self, modules):
         for module in modules:
             if module.__name__.lower() not in self.ruleset.get('config', {}):
-                self.modules[module.__name__.lower()] = module()
+                initargs = inspect.getargspec(module.__init__)
+                # init module if it doesn't have any args aside from self or if it has defaults for all args
+                nonselfargs = [a for a in initargs.args if a != 'self']
+                if not nonselfargs or (initargs.defaults and len(nonselfargs) == len(initargs.defaults)):
+                    logger.debug('loaded module {}'.format(module.__name__.lower()))
+                    self.modules[module.__name__.lower()] = module()
         
         if 'config' in self.ruleset:
             for name in self.ruleset['config']:
@@ -55,6 +62,7 @@ class Engine(object):
                 module_class = [m for m in modules if m.__name__.lower() == module_name]
                 module = module_class[0](**mc)
                 self.modules[name] = module
+                logger.debug('loaded module {} as {}'.format(self.modules[name].__name__.lower(), name))
                         
         
     def deep_compare(self, left, right):
