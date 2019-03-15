@@ -1,4 +1,5 @@
 trello.yml
+trello.d/
 .vscode
 
 *.pyc
