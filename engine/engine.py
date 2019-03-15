@@ -105,6 +105,9 @@ class Engine(object):
                     bindings.update({"trigger": self.deep_compare(trigger[name], conditionals)})
                     for task in self.jobs[job].tasks:
                         bindings.update(self.executions.get(job, {}))
+                        if task.when and not task.get_when(bindings=bindings):
+                            logger.debug('Skipping {}'.format(task.name))
+                            continue
                         # @todo refactor cleaner
                         loop = None
                         if task.loop:

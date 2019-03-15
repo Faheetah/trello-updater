@@ -11,6 +11,24 @@ class Task(object):
         self.module = module
         self.name = args.get('name')
         self.loop = args.get('loop')
+        self.when = args.get('when')
+    
+    def get_when(self, bindings=None, cond=None):
+        # if we are the first run from engine
+        if cond is None:
+            cond = self.when
+
+        # run through list recursively for multiple conditionals, implied ALL
+        if isinstance(cond, list):
+            for w in self.when:
+                if not self.get_when(bindings=bindings, cond=w):
+                    return False
+            return True
+
+        # direct string comparison
+        if isinstance(cond, str) or isinstance(cond, unicode):
+            result = Template(cond).render(**bindings)
+            return bool(yaml.safe_load(result))
     
     def get_loop(self, bindings=None):
         for k, v in self.loop.iteritems():
