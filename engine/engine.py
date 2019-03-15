@@ -73,7 +73,10 @@ class Engine(object):
             return re.search(left, right)
         
         if not isinstance(left, dict):
-            return left == right
+            if left == right:
+                return right
+            else:
+                return False
 
         if len(left.keys()):
             found = {}
@@ -90,6 +93,8 @@ class Engine(object):
     def run(self, name, conditionals, bindings=None):
         if bindings == None:
             bindings = {}
+        # webhook this is the json
+        # something like timer this is the spec with funcs
         bindings.update({"conditionals": conditionals})
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
