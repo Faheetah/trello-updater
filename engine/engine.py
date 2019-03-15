@@ -75,20 +75,26 @@ class Engine(object):
         if not isinstance(left, dict):
             return left == right
 
-        for key in left.keys():
-            if key not in right.keys():
-                return False
-            if not self.deep_compare(left[key], right[key]):
-                return False
+        if len(left.keys()):
+            found = {}
+            for key in left.keys():
+                if key not in right.keys():
+                    return False
+                comp = self.deep_compare(left[key], right[key])
+                if not comp:
+                    return False
+                found[key] = comp
+            return found
         return True
 
     def run(self, name, conditionals, bindings=None):
         if bindings == None:
             bindings = {}
-        bindings.update(conditionals)
+        bindings.update({"conditionals": conditionals})
         for job in self.jobs:
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
+                    bindings.update({"trigger": self.deep_compare(trigger[name], conditionals)})
                     for task in self.jobs[job].tasks:
                         bindings.update(self.executions.get(job, {}))
                         # @todo refactor cleaner

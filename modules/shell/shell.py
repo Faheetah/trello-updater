@@ -1,6 +1,7 @@
 import logging
 import shlex
 
+from pprint import pformat
 from subprocess import Popen, PIPE
 
 logger = logging.getLogger(__name__)
@@ -10,8 +11,15 @@ class Shell(object):
         self.env = env or {}
 
         self.tasks = {
+            'debug': self.debug,
             'run': self.run
         }
+
+    def debug(self, output):
+        if type(output) is str or type(output) is unicode:
+            logger.info('debug:\n{}'.format(output))
+        else:
+            logger.info('debug:\n' + pformat(output))
 
     def run(self, command, chdir=None, env=None, shell=True):
         if env is None:
