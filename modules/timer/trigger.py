@@ -36,7 +36,7 @@ class TimerTrigger(object):
     
     def parse_date(self, name, pattern, now):
         logger.debug('{} :: {} :: {}'.format(name, pattern, now))
-        if isinstance(pattern, str) and pattern == now:
+        if isinstance(pattern, int) and pattern == now:
             return now
         if isinstance(pattern, list) and now in pattern:
             return now
