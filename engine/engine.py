@@ -87,7 +87,10 @@ class Engine(object):
                 if key not in right.keys():
                     return False
                 comp = self.deep_compare(left[key], right[key])
-                if not comp:
+                # this isn't good, because we can't compare false triggers, but for now there is no standardization to what a failed trigger is
+                # this will at least catch any trigger that explicitly throws False or (most will) not return anything
+                # None should probably be the standard though, or we can accept a multiple match like return bool(matched), results in the triggers
+                if comp is None or comp is False:
                     return False
                 found[key] = comp
             return found
