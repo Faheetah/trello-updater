@@ -17,7 +17,7 @@ class GithubWebhook(object):
     
         json = request.get_json()
     
-        if json:
+        if json and json.get('ref'):
             message = u'{} :: {} :: {} :: {}'.format(json['ref'], json['before'], json['after'], json['pusher']['name'])
             current_app.logger.info(message)
     
