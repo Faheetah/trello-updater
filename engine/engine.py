@@ -43,21 +43,30 @@ class Engine(object):
         self.executions[job] = self.jobs[job].run(conditionals, bindings)
 
     def init_jobs(self):
-        jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config'} # and 'triggers' in self.ruleset[j]}
+        jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config'}
         for job in jobs:
-            tasks = []
-            # this is a pretty brute force way to implement this
-            for task in jobs[job]['tasks']:
-                if 'job' in task.keys():
-                    args = {'job': {'run': {'conditionals': None, 'bindings': task['job']['run']['params']}}}
-                    tasks.append(Task(self.jobs[task['job']['run']['job']], args))
-                else:
-                    for key in task:
-                        if key in self.modules.keys():
-                            tasks.append(Task(self.modules[key], task))
-                            break
-                # tasks.append(Task(self.modules[t.keys()[0]], t))
-            self.jobs[job] = Job(job, jobs[job].get('triggers', {}), tasks)
+            self.add_job(job, jobs)
+
+    def add_job(self, job, jobs, seen=None):
+        if seen is None:
+            seen = []
+        if job in seen:
+            raise Exception('Dependency loop found in chain {}'.format(' <> '.join(seen)))
+        tasks = []
+        # this is a pretty brute force way to implement this
+        for task in jobs[job]['tasks']:
+            if 'job' in task.keys():
+                if not task['job']['run']['job'] in self.jobs:
+                    seen.append(job)
+                    self.add_job(task['job']['run']['job'], jobs, seen=seen)
+                args = {'job': {'run': {'conditionals': None, 'bindings': task['job']['run'].get('params', {})}}}
+                tasks.append(Task(self.jobs[task['job']['run']['job']], args))
+            else:
+                for key in task:
+                    if key in self.modules.keys():
+                        tasks.append(Task(self.modules[key], task))
+                        break
+        self.jobs[job] = Job(job, jobs[job].get('triggers', {}), tasks)
         
 
     def init_modules(self, modules):
