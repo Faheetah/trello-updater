@@ -48,13 +48,19 @@ class Task(object):
     def run(self, conditionals, bindings=None):
         if bindings == None:
             bindings = conditionals
-        for task in self.args: 
-            task_name = self.args[task].keys()[0] 
-            templated_tasks = {}
-            for k, v in self.args[task][task_name].iteritems(): 
-                if isinstance(v, basestring):
-                    templated_tasks[k] = Template(v).render(**bindings)
-                else:
-                    templated_tasks[k] = v
-            print("{0} :: {1}".format(task, templated_tasks))
-            return self.module.tasks[task_name](**templated_tasks)
+
+        module = [m for m in self.args if m not in ('name', 'when', 'loop')][0]
+
+        if not len(module):
+            raise Exception('Task could not be found')
+
+        task_name = self.args[module].keys()[0]
+
+        templated_tasks = {}
+        for k, v in self.args[module][task_name].iteritems(): 
+            if isinstance(v, basestring):
+                templated_tasks[k] = Template(v).render(**bindings)
+            else:
+                templated_tasks[k] = v
+        print("{0} :: {1}".format(module, templated_tasks))
+        return self.module.tasks[task_name](**templated_tasks)
