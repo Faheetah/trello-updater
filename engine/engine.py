@@ -21,14 +21,14 @@ class Engine(object):
         self.jobs = {}
         self.init_jobs()
 
-        self.webhooks = {}
-        self.init_webhooks()
+        self.triggers = {}
+        self.init_triggers()
 
-    def init_webhooks(self):
+    def init_triggers(self):
         for name, module in self.modules.iteritems():
             for trigger_class in getattr(module, 'triggers', []):
                 trigger = trigger_class(name, module, self.callback(name))
-                self.webhooks[name] = trigger
+                self.triggers[name] = trigger
     
     def init_jobs(self):
         jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config' and 'triggers' in self.ruleset[j]}
@@ -39,14 +39,16 @@ class Engine(object):
 
     def init_modules(self, modules):
         for module in modules:
-            if module.__name__.lower() not in self.ruleset.get('config', {}):
+            module_name = module.__name__.lower()
+            if module_name not in self.ruleset.get('config', {}):
                 initargs = inspect.getargspec(module.__init__)
                 # init module if it doesn't have any args aside from self or if it has defaults for all args
                 nonselfargs = [a for a in initargs.args if a != 'self']
                 if not nonselfargs or (initargs.defaults and len(nonselfargs) == len(initargs.defaults)):
-                    self.modules[module.__name__.lower()] = module()
-                    logger.debug('loaded module {}'.format(module.__name__.lower()))
+                    self.modules[module_name] = module()
+                    logger.debug('loaded module {}'.format(module_name))
         
+        # maybe let config be a module and it can handle all of this
         if 'config' in self.ruleset:
             for name in self.ruleset['config']:
                 module_config = self.ruleset['config'][name]
@@ -106,36 +108,9 @@ class Engine(object):
             for trigger in self.jobs[job].triggers:
                 if name in trigger and self.deep_compare(trigger[name], conditionals):
                     bindings.update({"trigger": self.deep_compare(trigger[name], conditionals)})
-                    for task in self.jobs[job].tasks:
-                        bindings.update(self.executions.get(job, {}))
-                        if task.when and not task.get_when(bindings=bindings):
-                            logger.debug('Skipping {}'.format(task.name))
-                            continue
-                        # @todo refactor cleaner
-                        loop = None
-                        if task.loop:
-                            loop = task.get_loop(bindings)
-                            for k, v in loop.iteritems():
-                                if isinstance(v, str) or isinstance(v, unicode):
-                                    loop[k] = yaml.load(v)
-                        if loop and task.name:
-                            self.executions[job] = {task.name: []}
-                            for k, v in loop.iteritems():
-                                for i in v:
-                                    # don't pollute bindings, add each run through the loop to a list in executions
-                                    local_bindings = bindings.copy()
-                                    local_bindings.update({k: i})
-                                    self.executions[job][task.name].append(task.run(conditionals, local_bindings))
-                        elif loop:
-                            for k, v in loop.iteritems():
-                                for i in v:
-                                    local_bindings = bindings.copy()
-                                    local_bindings.update({k: i})
-                                    task.run(conditionals, local_bindings)
-                        elif task.name:
-                            self.executions[job] = {task.name: task.run(conditionals, bindings)}
-                        else:
-                            task.run(conditionals, bindings)
+                    bindings.update(self.executions.get(job, {}))
+                    self.executions[job] = self.jobs[job].run(conditionals, bindings)
+
 
     def callback(self, name):
         def func(conditionals, bindings=None):

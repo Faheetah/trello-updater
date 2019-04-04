@@ -1,3 +1,6 @@
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Job(object):
     def __init__(self, name, triggers, tasks):
@@ -5,6 +8,35 @@ class Job(object):
         self.triggers = triggers
         self.tasks = tasks
 
-    def run(self, payload=None):
+    def run(self, conditionals, bindings):
+        executions = {}
         for task in self.tasks:
-            task.run()
+            if task.when and not task.get_when(bindings=bindings):
+                logger.debug('Skipping {}'.format(task.name))
+                continue
+            # @todo refactor cleaner
+            loop = None
+            if task.loop:
+                loop = task.get_loop(bindings)
+                for k, v in loop.iteritems():
+                    if isinstance(v, str) or isinstance(v, unicode):
+                        loop[k] = yaml.load(v)
+            if loop and task.name:
+                executions = {task.name: []}
+                for k, v in loop.iteritems():
+                    for i in v:
+                        # don't pollute bindings, add each run through the loop to a list in executions
+                        local_bindings = bindings.copy()
+                        local_bindings.update({k: i})
+                        executions[task.name].append(task.run(conditionals, local_bindings))
+            elif loop:
+                for k, v in loop.iteritems():
+                    for i in v:
+                        local_bindings = bindings.copy()
+                        local_bindings.update({k: i})
+                        task.run(conditionals, local_bindings)
+            elif task.name:
+                executions = {task.name: task.run(conditionals, bindings)}
+            else:
+                task.run(conditionals, bindings)
+        return executions
