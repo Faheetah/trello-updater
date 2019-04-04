@@ -62,5 +62,5 @@ class Task(object):
                 templated_tasks[k] = Template(v).render(**bindings)
             else:
                 templated_tasks[k] = v
-        print("{0} :: {1}".format(module, templated_tasks))
+        logger.info("{0} :: {1}".format(module, templated_tasks))
         return self.module.tasks[task_name](**templated_tasks)

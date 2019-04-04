@@ -6,13 +6,17 @@ class Job(object):
     def __init__(self, name, triggers, tasks):
         self.name = name
         self.triggers = triggers
-        self.tasks = tasks
+        self.runlist = tasks
+        self.tasks = {'run': self.run}
 
     def run(self, conditionals, bindings):
         executions = {}
-        for task in self.tasks:
+        for task in self.runlist:
             if task.when and not task.get_when(bindings=bindings):
-                logger.debug('Skipping {}'.format(task.name))
+                if task.name:
+                    logger.debug('Skipping {}'.format(task.name))
+                else:
+                    logger.debug('Skipping anonymous task')
                 continue
             # @todo refactor cleaner
             loop = None
