@@ -29,7 +29,19 @@ class Engine(object):
             for trigger_class in getattr(module, 'triggers', []):
                 trigger = trigger_class(name, module, self.callback(name))
                 self.triggers[name] = trigger
+            # don't see a cleaner way to implement this yet
+            for trigger_class in getattr(module, 'global_triggers', []):
+                trigger = trigger_class(name, module, self.global_job_callback)
+                self.triggers[name] = trigger
     
+    def global_job_callback(self, conditionals, bindings=None):
+        if bindings == None:
+            bindings = {}
+        job = conditionals['job']
+        bindings.update(self.executions.get(job, {}))
+        bindings.update({"trigger": conditionals.get('parameters')})
+        self.executions[job] = self.jobs[job].run(conditionals, bindings)
+
     def init_jobs(self):
         jobs = {j: self.ruleset[j] for j in self.ruleset if j != 'config' and 'triggers' in self.ruleset[j]}
         for job in jobs:
