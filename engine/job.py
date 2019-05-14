@@ -12,6 +12,7 @@ class Job(object):
     def run(self, conditionals, bindings):
         executions = {}
         for task in self.runlist:
+            bindings.update(executions)
             if task.when and not task.get_when(bindings=bindings):
                 if task.name:
                     logger.debug('Skipping {}'.format(task.name))
@@ -26,7 +27,7 @@ class Job(object):
                     if isinstance(v, str) or isinstance(v, unicode):
                         loop[k] = yaml.load(v)
             if loop and task.name:
-                executions = {task.name: []}
+                executions[task.name] = []
                 for k, v in loop.iteritems():
                     for i in v:
                         # don't pollute bindings, add each run through the loop to a list in executions
@@ -40,7 +41,7 @@ class Job(object):
                         local_bindings.update({k: i})
                         task.run(conditionals, local_bindings)
             elif task.name:
-                executions = {task.name: task.run(conditionals, bindings)}
+                executions[task.name] = task.run(conditionals, bindings)
             else:
                 task.run(conditionals, bindings)
         return executions

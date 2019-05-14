@@ -20,6 +20,7 @@ class Shell(object):
             logger.info('debug:\n{}'.format(output))
         else:
             logger.info('debug:\n' + pformat(output))
+        return {"output": output}
 
     def run(self, command, chdir=None, env=None, shell=True):
         if env is None:
