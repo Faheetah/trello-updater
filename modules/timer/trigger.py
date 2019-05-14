@@ -12,27 +12,25 @@ class TimerTrigger(object):
         self.callback = callback
         self.start()
     
-    def start(self):
-        # instead of brute forcing the timer, we can probably
-        # use the first start as a seed by parsing all triggers
-        # and catching the next one(s)
-        # I just want it working for now..
-        threading.Timer(1.0, self.start).start()
+    def start(self, last=None):
         now = datetime.datetime.now()
+        threading.Timer(1.0, self.start, kwargs={'last': now}).start()
 
-        spec = {
-            "month": self.month,
-            "weekday": self.weekday,
-            "day": self.day,
-            "hour": self.hour,
-            "minute": self.minute,
-            "second": self.second
-        }
-
-        # this isn't going to be 100% accurate because it's not straightforward
-        # to generate time right, will cause possible off by 1 but for now shouldn't be
-        # too impacting
-        self.callback(spec, bindings={x: getattr(now, x) for x in dir(now)})
+        if last is not None:
+            elapsed = now.second - last.second
+            if elapsed < 0:
+                elapsed = elapsed + 60
+            for second in range(elapsed)[::-1]:
+                time = now - datetime.timedelta(seconds=second)
+                spec = {
+                    "month": time.month,
+                    "weekday": time.weekday(),
+                    "day": time.day,
+                    "hour": time.hour,
+                    "minute": time.minute,
+                    "second": time.second
+                }
+                self.callback(spec, bindings={x: getattr(time, x) for x in dir(time)})
     
     def parse_date(self, name, pattern, now):
         logger.debug('{} :: {} :: {}'.format(name, pattern, now))
