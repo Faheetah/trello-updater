@@ -10,7 +10,7 @@ from job import Job
 logger = logging.getLogger(__name__)
 
 class Engine(object):
-    def __init__(self, ruleset, modules):
+    def __init__(self, ruleset, modules, init_triggers=True):
         self.ruleset = ruleset
 
         self.executions = {}
@@ -22,7 +22,9 @@ class Engine(object):
         self.init_jobs()
 
         self.triggers = {}
-        self.init_triggers()
+
+        if init_triggers:
+            self.init_triggers()
 
     def init_triggers(self):
         for name, module in self.modules.iteritems():
