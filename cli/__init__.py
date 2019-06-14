@@ -78,17 +78,6 @@ def parse_config_path(path):
                         with open(task_path, 'r') as t:
                             config[job_name][task_name] = yaml.load(t)
 
-                    if os.path.isdir(task_path):
-                        config[job_name][task_name] = []
-                        for spec in os.listdir(task_path):
-                            spec_path = os.path.join(task_path, spec)
-                            spec_name = os.path.splitext(spec)[0]
-                            if os.path.isfile(spec_path):
-                                if spec_name in config[job_name][task_name]:
-                                    print('duplicate key {}'.format(job))
-                                    sys.exit(1)
-                                with open(spec_path, 'r') as t:
-                                    config[job_name][task_name].append(yaml.load(t))
 
     return roll_up_keys(config)
 
