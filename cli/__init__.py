@@ -16,7 +16,7 @@ def parse():
         description='Trello client',
     )
 
-    parser.add_argument('--config', '-c', help='Trello config file', default='trello.yml')
+    parser.add_argument('--config', '-c', help='Trello config file', default=os.environ.get('TRELLO_CONFIG', 'trello.yml'))
     parser.add_argument('--verbose', '-v', action='store_true', help='show verbose (debug) level output')
 
     sub = parser.add_subparsers(
