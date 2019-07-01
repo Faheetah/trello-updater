@@ -133,7 +133,7 @@ class Trello(object):
         else:
             idList = self.create_list(list)['id']
 
-        if members is not None:
+        if members is None:
             members = []
         member_ids = [m.get('id') for m in self.members() if m.get('username') in members]
 
