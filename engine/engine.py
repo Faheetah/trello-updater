@@ -56,7 +56,7 @@ class Engine(object):
             raise Exception('Dependency loop found in chain {}'.format(' <> '.join(seen)))
         tasks = []
         # this is a pretty brute force way to implement this
-        for task in jobs[job]['tasks']:
+        for task in jobs[job].get('tasks', []):
             if 'job' in task.keys():
                 if not task['job']['run']['job'] in self.jobs:
                     seen.append(job)
