@@ -93,7 +93,7 @@ class Engine(object):
                     module_name = module_config.keys()[0]
                     mc = module_config[module_name]
                 else:
-                    raise Exception('Only one module should be defined')
+                    raise Exception('Only one module should be defined: ' + name)
 
                 module_class = [m for m in modules if m.__name__.lower() == module_name]
                 module = module_class[0](**mc)
