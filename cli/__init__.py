@@ -62,7 +62,10 @@ def parse_config_path(path):
                     print('duplicate key {}'.format(job))
                     sys.exit(1)
                 with open(job_path, 'r') as t:
-                    config[job_name] = yaml.load(t)
+                    try:
+                        config[job_name] = yaml.load(t)
+                    except:
+                        pass
             
             # this could be refactored cleaner
             if os.path.isdir(job_path):
@@ -76,7 +79,10 @@ def parse_config_path(path):
                             print('duplicate key {}'.format(job))
                             sys.exit(1)
                         with open(task_path, 'r') as t:
-                            config[job_name][task_name] = yaml.load(t)
+                            try:
+                                config[job_name][task_name] = yaml.load(t)
+                            except:
+                                pass
 
 
     return roll_up_keys(config)
