@@ -13,6 +13,7 @@ class Trello(object):
         self.api_token = api_token
         self.board = board
         self.label_cache = []
+        self.member_cache = []
         self.endpoint = endpoint or 'https://api.trello.com/1'
 
         self.tasks = {
@@ -45,6 +46,11 @@ class Trello(object):
         else:
             raise Exception('Could not query API: {0} returned for {1}, {2}'.format(req.status_code, uri, req.text))
 
+    def members(self):
+        if not self.member_cache:
+            self.member_cache = self.request('GET', '/boards/{0}/members'.format(self.board))
+        return self.member_cache
+    
     def labels(self):
         if not self.label_cache:
             self.label_cache = self.request('GET', '/boards/{0}/labels'.format(self.board))
@@ -120,13 +126,14 @@ class Trello(object):
             return [c for c in self.request('GET', '/boards/{}/cards'.format(self.board)) if c['name'] == name][0]
         return False
 
-    def create_card(self, name, description, list):
+    def create_card(self, name, description, list, members=None):
         l = self.list_lists()
         if len(l):
             idList = [li for li in l if li['name'] == list][0]['id']
         else:
             idList = self.create_list(list)['id']
-        return self.request('POST', '/cards', params={'name': name, 'desc': description, 'idList': idList})
+        member_ids = [m.get('id') for m in self.members() if m.get('username') in members]
+        return self.request('POST', '/cards', params={'members': member_ids,'name': name, 'desc': description, 'idList': idList})
 
     def create_checklist(self, name, card, checkItems=None):
         checklist = self.request('POST', '/checklists', params={'name': name, 'idCard': card})
