@@ -17,7 +17,8 @@ class Timer(object):
     def __init__(self, *args, **kwargs):
         self.tasks = {
             'weekday': self.weekday,
-            'sleep': self.sleep
+            'sleep': self.sleep,
+            'now': self.now
         }
 
         self.triggers = [TimerTrigger]
@@ -33,3 +34,6 @@ class Timer(object):
         delta = timedelta((7 + DAYS.get(weekday.lower()) - now.weekday()) % 7)
         wd = now.replace(hour=replace.hour, minute=replace.minute, second=replace.second) + delta + tz
         return wd.isoformat()
+
+    def now(self):
+        return datetime.now()
