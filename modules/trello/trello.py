@@ -137,7 +137,7 @@ class Trello(object):
             members = []
         member_ids = [m.get('id') for m in self.members() if m.get('username') in members]
 
-        return self.request('POST', '/cards', params={'members': member_ids,'name': name, 'desc': description, 'idList': idList})
+        return self.request('POST', '/cards', params={'idMembers': member_ids,'name': name, 'desc': description, 'idList': idList})
 
     def create_checklist(self, name, card, checkItems=None):
         checklist = self.request('POST', '/checklists', params={'name': name, 'idCard': card})
