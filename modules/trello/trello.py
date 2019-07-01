@@ -132,7 +132,11 @@ class Trello(object):
             idList = [li for li in l if li['name'] == list][0]['id']
         else:
             idList = self.create_list(list)['id']
+
+        if members is not None:
+            members = []
         member_ids = [m.get('id') for m in self.members() if m.get('username') in members]
+
         return self.request('POST', '/cards', params={'members': member_ids,'name': name, 'desc': description, 'idList': idList})
 
     def create_checklist(self, name, card, checkItems=None):
