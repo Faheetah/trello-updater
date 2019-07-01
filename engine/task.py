@@ -57,10 +57,11 @@ class Task(object):
         task_name = self.args[module].keys()[0]
 
         templated_tasks = {}
-        for k, v in self.args[module][task_name].iteritems(): 
-            if isinstance(v, basestring):
-                templated_tasks[k] = Template(v).render(**bindings)
-            else:
-                templated_tasks[k] = v
+        if self.args[module][task_name] is not None:
+            for k, v in self.args[module][task_name].iteritems(): 
+                if isinstance(v, basestring):
+                    templated_tasks[k] = Template(v).render(**bindings)
+                else:
+                    templated_tasks[k] = v
         logger.info("{0} :: {1}".format(module, templated_tasks))
         return self.module.tasks[task_name](**templated_tasks)
