@@ -1,36 +1,48 @@
-import threading
 import datetime
-
 import logging
+import threading
+import time
+
 
 logger = logging.getLogger(__name__)
+
 
 class TimerTrigger(object):
     def __init__(self, name, module, callback):
         self.name = name
         self.module = module
         self.callback = callback
-        self.start()
+        t = threading.Thread(target=self.start)
+        t.daemon = True
+        t.start()
     
-    def start(self, last=None):
-        now = datetime.datetime.now()
-        threading.Timer(1.0, self.start, kwargs={'last': now}).start()
+    def start(self):
+        last = None
 
-        if last is not None:
-            elapsed = now.second - last.second
-            if elapsed < 0:
-                elapsed = elapsed + 60
-            for second in range(elapsed)[::-1]:
-                time = now - datetime.timedelta(seconds=second)
-                spec = {
-                    "month": time.month,
-                    "weekday": time.weekday(),
-                    "day": time.day,
-                    "hour": time.hour,
-                    "minute": time.minute,
-                    "second": time.second
-                }
-                self.callback(spec, bindings={x: getattr(time, x) for x in dir(time)})
+        while(True):
+            now = datetime.datetime.now()
+    
+            if last is not None:
+                elapsed = now.second - last.second
+                if elapsed < 0:
+                    elapsed = elapsed + 60
+                for second in range(elapsed)[::-1]:
+                    current = now - datetime.timedelta(seconds=second)
+                    spec = {
+                        "month": current.month,
+                        "weekday": current.weekday(),
+                        "day": current.day,
+                        "hour": current.hour,
+                        "minute": current.minute,
+                        "second": current.second
+                    }
+                    self.callback(spec, bindings={x: getattr(current, x) for x in dir(current)})
+            last = now
+    
+            try:
+                time.sleep(1)
+            except KeyboardInterrupt:
+                pass
     
     def parse_date(self, name, pattern, now):
         logger.debug('{} :: {} :: {}'.format(name, pattern, now))
