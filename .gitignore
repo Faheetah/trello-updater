@@ -5,6 +5,7 @@ trello.d/
 *.pyc
 *.egg-info/
 *.egg
+.tox/
 env/
 build/
 .testmondata
