@@ -50,7 +50,7 @@ def parse_config_path(path):
 
     if os.path.isfile(path):    
         with open(path, 'r') as t:
-            config = yaml.load(t)
+            config = yaml.safe_load(t)
 
     if os.path.isdir(path):
         for job in os.listdir(path):
@@ -63,7 +63,7 @@ def parse_config_path(path):
                     sys.exit(1)
                 if job_path.endswith('.yml'):
                     with open(job_path, 'r') as t:
-                        config[job_name] = yaml.load(t)
+                        config[job_name] = yaml.safe_load(t)
             
             # this could be refactored cleaner
             if os.path.isdir(job_path):
@@ -78,7 +78,7 @@ def parse_config_path(path):
                             sys.exit(1)
                         if job_path.endswith('.yml'):
                             with open(task_path, 'r') as t:
-                                config[job_name][task_name] = yaml.load(t)
+                                config[job_name][task_name] = yaml.safe_load(t)
 
     return roll_up_keys(config)
 
@@ -104,5 +104,4 @@ def main():
     try:
         args.func(config, *extra_args)
     except KeyboardInterrupt:
-        print('Keyboard interrupt')
         sys.exit(1)
