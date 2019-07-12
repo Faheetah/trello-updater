@@ -46,6 +46,11 @@ class Task(object):
         return self.loop
 
     def run(self, conditionals, bindings=None):
+        if self.name is not None:
+            logger.info('Running task {}'.format(self.name))
+        else:
+            logger.info('Running module {}'.format(self.module.__name__.lower()))
+
         if bindings == None:
             bindings = conditionals
 

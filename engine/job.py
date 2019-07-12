@@ -11,6 +11,7 @@ class Job(object):
         self.tasks = {'run': self.run}
 
     def run(self, conditionals, bindings):
+        logger.info('Running job {}'.format(self.name))
         executions = {}
         for task in self.runlist:
             bindings.update(executions)
