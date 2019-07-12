@@ -46,11 +46,6 @@ class Task(object):
         return self.loop
 
     def run(self, conditionals, bindings=None):
-        if self.name is not None:
-            logger.info('Running task {}'.format(self.name))
-        else:
-            logger.info('Running module {}'.format(self.module.__name__.lower()))
-
         if bindings == None:
             bindings = conditionals
 
@@ -69,4 +64,10 @@ class Task(object):
                 else:
                     templated_tasks[k] = v
         logger.info("{0} :: {1}".format(module, templated_tasks))
+
+        if self.name is not None:
+            logger.info('Running task {}'.format(self.name))
+        else:
+            logger.info('Running module {}'.format(task_name))
+
         return self.module.tasks[task_name](**templated_tasks)
