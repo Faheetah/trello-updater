@@ -157,5 +157,5 @@ class Trello(object):
         }
         return self.request('PUT', '/cards/{}'.format(card), params=params)
 
-    def delete_card(self, card)
+    def delete_card(self, card):
         return self.request('DELETE', '/cards/{}'.format(card))
