@@ -77,7 +77,7 @@ class Trello(object):
         return self.request('POST', '/cards/{0}/idLabels'.format(card), params={'value': l.id})
 
     def add_attachment(self, card, url=None, file=None, name=None, mimeType=None):
-        return self.request('POST', '/cards/{0}/attachments'.format(card), params={'url': url, 'file': file, 'name': name, 'mimeType': mimetype})
+        return self.request('POST', '/cards/{0}/attachments'.format(card), params={'url': url, 'file': file, 'name': name, 'mimeType': mimeType})
 
     def search(self, query, is_open=True, board=None, limit=100):
         if query == None:
