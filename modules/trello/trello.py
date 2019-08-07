@@ -24,6 +24,7 @@ class Trello(object):
             'getCard': self.get_card,
             'createCard': self.create_card,
             'updateCard': self.update_card,
+            'addAttachment': self.add_attachment,
             'createChecklist': self.create_checklist,
             "search": self.search,
         }
@@ -74,6 +75,9 @@ class Trello(object):
         labels = self.labels()
         l = [l for l in labels if l.name == label][0]
         return self.request('POST', '/cards/{0}/idLabels'.format(card), params={'value': l.id})
+
+    def add_attachment(self, card, url=None, file=None, name=None, mimeType=None):
+        return self.request('POST', '/cards/{0}/attachments'.format(card), params={'url': url, 'file': file, 'name': name, 'mimeType': mimetype})
 
     def search(self, query, is_open=True, board=None, limit=100):
         if query == None:
