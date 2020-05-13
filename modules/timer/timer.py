@@ -1,7 +1,7 @@
 import time
 from datetime import datetime, timedelta
 
-from trigger import TimerTrigger
+from .trigger import TimerTrigger
 
 DAYS = {
     "monday": 0,

@@ -1,3 +1,3 @@
-from github import Github
+from .github import Github
 
 __all__ = ['Github']

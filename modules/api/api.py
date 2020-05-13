@@ -1,6 +1,6 @@
 import requests
 
-from webhook import ApiWebhook
+from .webhook import ApiWebhook
 
 
 class Api(object):

@@ -22,7 +22,7 @@ def main(config, *args):
         engine = Engine(config, modules, init_triggers=False)
     
     job_name = args[0]
-    if not job_name in engine.jobs.keys():
+    if not job_name in list(engine.jobs.keys()):
         print('job not found in config: {}'.format(job_name))
         sys.exit(1)
 

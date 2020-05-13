@@ -1,9 +1,9 @@
 import requests
 
-from api.card import Card
-from api.label import Label
+from .api.card import Card
+from .api.label import Label
 
-from webhook import TrelloWebhook
+from .webhook import TrelloWebhook
 
 # https://developers.trello.com/reference/#introduction
 

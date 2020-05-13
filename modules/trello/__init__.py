@@ -1,3 +1,3 @@
-from trello import Trello
+from .trello import Trello
 
 __all__ = ['Trello']

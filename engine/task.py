@@ -31,7 +31,7 @@ class Task(object):
             return bool(yaml.safe_load(result))
     
     def get_loop(self, bindings=None):
-        for k, v in self.loop.iteritems():
+        for k, v in list(self.loop.items()):
             if not v:
                 logger.debug({k: []})
                 return {k: []}
@@ -54,12 +54,12 @@ class Task(object):
         if not len(module):
             raise Exception('Task could not be found')
 
-        task_name = self.args[module].keys()[0]
+        task_name = list(self.args[module].keys())[0]
 
         templated_tasks = {}
         if self.args[module][task_name] is not None:
-            for k, v in self.args[module][task_name].iteritems(): 
-                if isinstance(v, basestring):
+            for k, v in list(self.args[module][task_name].items()): 
+                if isinstance(v, str):
                     templated_tasks[k] = Template(v).render(**bindings)
                 else:
                     templated_tasks[k] = v

@@ -4,8 +4,8 @@ import yaml
 
 import logging
 
-from task import Task
-from job import Job
+from .task import Task
+from .job import Job
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class Engine(object):
             self.init_triggers()
 
     def init_triggers(self):
-        for name, module in self.modules.iteritems():
+        for name, module in list(self.modules.items()):
             for trigger_class in getattr(module, 'triggers', []):
                 trigger = trigger_class(name, module, self.callback(name))
                 self.triggers[name] = trigger
@@ -57,7 +57,7 @@ class Engine(object):
         tasks = []
         # this is a pretty brute force way to implement this
         for task in jobs[job].get('tasks', []):
-            if 'job' in task.keys():
+            if 'job' in list(task.keys()):
                 if not task['job']['run']['job'] in self.jobs:
                     seen.append(job)
                     self.add_job(task['job']['run']['job'], jobs, seen=seen)
@@ -65,7 +65,7 @@ class Engine(object):
                 tasks.append(Task(self.jobs[task['job']['run']['job']], args))
             else:
                 for key in task:
-                    if key in self.modules.keys():
+                    if key in (self.modules.keys()):
                         tasks.append(Task(self.modules[key], task))
                         break
         self.jobs[job] = Job(job, jobs[job].get('triggers', {}), tasks)
@@ -89,8 +89,8 @@ class Engine(object):
                 if name in [m.__name__.lower() for m in modules]:
                     module_name = name
                     mc = module_config
-                elif len(module_config.keys()) == 1:
-                    module_name = module_config.keys()[0]
+                elif len(list(module_config.keys())) == 1:
+                    module_name = list(module_config.keys())[0]
                     mc = module_config[module_name]
                 else:
                     raise Exception('Only one module should be defined: ' + name)
@@ -120,10 +120,10 @@ class Engine(object):
             else:
                 return False
 
-        if len(left.keys()):
+        if len(list(left.keys())):
             found = {}
-            for key in left.keys():
-                if key not in right.keys():
+            for key in list(left.keys()):
+                if key not in list (right.keys()):
                     return False
                 comp = self.deep_compare(left[key], right[key])
                 # this isn't good, because we can't compare false triggers, but for now there is no standardization to what a failed trigger is

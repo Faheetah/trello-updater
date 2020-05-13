@@ -25,19 +25,19 @@ class Job(object):
             loop = None
             if task.loop:
                 loop = task.get_loop(bindings)
-                for k, v in loop.iteritems():
+                for k, v in list(loop.items()):
                     if isinstance(v, str) or isinstance(v, unicode):
                         loop[k] = yaml.load(v)
             if loop and task.name:
                 executions[task.name] = []
-                for k, v in loop.iteritems():
+                for k, v in list(loop.items()):
                     for i in v:
                         # don't pollute bindings, add each run through the loop to a list in executions
                         local_bindings = bindings.copy()
                         local_bindings.update({k: i})
                         executions[task.name].append(task.run(conditionals, local_bindings))
             elif loop:
-                for k, v in loop.iteritems():
+                for k, v in list(loop.items()):
                     for i in v:
                         local_bindings = bindings.copy()
                         local_bindings.update({k: i})

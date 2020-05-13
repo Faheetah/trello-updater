@@ -1,6 +1,6 @@
 import requests
 
-from webhook import GithubWebhook
+from .webhook import GithubWebhook
 
 
 class Github(object):

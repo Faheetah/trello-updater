@@ -25,7 +25,7 @@ def main(config, *args):
     pid = gevent.os.fork()
     if pid == 0:
         _, _, config = cli.parse()
-        for name, webhook in engine.triggers.iteritems():
+        for name, webhook in list(engine.triggers.items()):
             if getattr(webhook, 'blueprint', None) and getattr(webhook, 'register', None):
                 with app.app_context():
                     webhook_url = '/'.join((config['config'][name]['webhook'], name))

@@ -7,7 +7,7 @@ import yaml
 from inspect import getmembers, ismodule, isfunction
 
 import cli
-import commands
+from . import commands
 from modules.trello import Trello
 
 
@@ -88,7 +88,7 @@ def roll_up_keys(yaml):
             roll_up_keys(v)
     elif isinstance(yaml, dict):
         f = {}
-        for k,v in yaml.iteritems():
+        for k,v in list(yaml.items()):
             items = k.split(':')
             if(len(items) > 1):
                 newv = {':'.join(items[1:]): v}

@@ -1,3 +1,3 @@
-from shell import Shell
+from .shell import Shell
 
 __all__ = ['Shell']

@@ -1,3 +1,3 @@
-from timer import Timer
+from .timer import Timer
 
 __all__ = ['Timer']
