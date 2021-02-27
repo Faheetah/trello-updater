@@ -12,7 +12,7 @@ class Task(object):
         self.name = args.get('name')
         self.loop = args.get('loop')
         self.when = args.get('when')
-    
+
     def get_when(self, bindings=None, cond=None):
         # if we are the first run from engine
         if cond is None:
@@ -29,7 +29,7 @@ class Task(object):
         if isinstance(cond, str) or isinstance(cond, unicode):
             result = Template(cond).render(**bindings)
             return bool(yaml.safe_load(result))
-    
+
     def get_loop(self, bindings=None):
         for k, v in list(self.loop.items()):
             if not v:
@@ -58,12 +58,12 @@ class Task(object):
 
         templated_tasks = {}
         if self.args[module][task_name] is not None:
-            for k, v in list(self.args[module][task_name].items()): 
+            for k, v in list(self.args[module][task_name].items()):
                 if isinstance(v, str):
                     templated_tasks[k] = Template(v).render(**bindings)
                 else:
                     templated_tasks[k] = v
-        logger.info("{0} :: {1}".format(module, templated_tasks))
+        logger.debug("{0} :: {1}".format(module, templated_tasks))
 
         if self.name is not None:
             logger.info('Running task {}'.format(self.name))
