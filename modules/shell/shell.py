@@ -30,7 +30,7 @@ class Shell(object):
         if not shell:
             command = shlex.split(command)
 
-        proc = Popen(command, stdout=PIPE, stderr=PIPE, cwd=chdir, env=env, shell=shell)
+        proc = Popen(command, stdout=PIPE, stderr=PIPE, cwd=chdir, env=env, shell=shell, encoding='utf8')
         out, err = proc.communicate()
         exitcode = proc.returncode
         logger.info("{} :: {}".format(command, exitcode))
@@ -38,4 +38,4 @@ class Shell(object):
             logger.debug('stdout:\n' + out)
         if err:
             logger.debug('stderr:\n' + err)
-        return {"stdout": unicode(out.replace('\n', '\\n'), "utf8"), "stderr": unicode(err.replace('\n', '\\n'), "utf8"), "rc": exitcode}
+        return {"stdout": out.replace('\n', '\\n'), "stderr": err.replace('\n', '\\n'), "rc": exitcode}
