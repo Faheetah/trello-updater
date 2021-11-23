@@ -1,42 +1,37 @@
 import gevent
 from gevent.pywsgi import WSGIServer
+from flask import Flask
+import logging
+import sys
 
 import cli
-import time
-
-from trello import Trello
-from webhook.server import app
-
-def init_webhook():
-    _, _, config = cli.parse()
-    trello = Trello(config['key'], config['token'], config['board'])
-    webhooks = trello.list_webhooks()
-
-    if not [wh for wh in webhooks if wh['callbackURL'] == config['webhook']]:
-        for i in range(5):
-            app.logger.info('creating webhook for {}'.format(config['webhook']))
-            try:
-                trello.add_webhook(config['webhook'])
-                return
-            except Exception:
-                app.logger.info('retrying in {} seconds'.format(i))
-                time.sleep(i)
-        app.logger.warning('could not create webhook for {}'.format(config['webhook']))
+from modules import modules
+from engine import Engine
 
 
-def main(*args):
+def main(config, *args):
     'start a webhook server for trello'
-    
+
+    app = Flask(__name__)
+    app.logger.addHandler(logging.StreamHandler(sys.stdout))
+
+    with app.app_context():
+        engine = Engine(config, modules)
+
     http_server = WSGIServer(('', 5000), app)
     if not http_server.started:
         http_server.start()
 
     pid = gevent.os.fork()
     if pid == 0:
-        init_webhook()
+        _, _, config = cli.parse()
+        for name, webhook in list(engine.triggers.items()):
+            if getattr(webhook, 'blueprint', None) and getattr(webhook, 'register', None):
+                with app.app_context():
+                    webhook_url = '/'.join((config['config'][name]['webhook'], name))
+                    webhook.register(webhook_url)
 
     try:
         http_server._stop_event.wait()
     finally:
         http_server.stop()
-

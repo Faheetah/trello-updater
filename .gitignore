@@ -1,9 +1,11 @@
 trello.yml
+trello.d/
 .vscode
 
 *.pyc
 *.egg-info/
 *.egg
+.tox/
 env/
 build/
 .testmondata
